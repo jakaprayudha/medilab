@@ -3,10 +3,10 @@
 <!-- [Head] start -->
 <?php require 'partial/head.php'; ?>
 <?php
-$modalId = "modalMasterLab";
-$title   = "Tambah Master Lab";
-$content = "forms/master_lab_frm.php"; // isi field Master Lab
-$submitId = "btnSaveMasterLab";
+$modalId = "modalMasterDokterPA";
+$title   = "Tambah Master Dokter PA";
+$content = "forms/master_dokter_patalogi_frm.php"; // isi field Master Dokter PA
+$submitId = "btnSaveMasterDokterPA";
 require "components/modal/modal.php";
 ?>
 <!-- [Head] end -->
@@ -34,12 +34,12 @@ require "components/modal/modal.php";
                   <div class="col-md-12">
                      <ul class="breadcrumb">
                         <li class="breadcrumb-item"><a href="index">Home</a></li>
-                        <li class="breadcrumb-item" aria-current="page">Pemerikasan Laboratorium</li>
+                        <li class="breadcrumb-item" aria-current="page">Dokter Patalogi</li>
                      </ul>
                   </div>
                   <div class="col-md-12">
                      <div class="page-header-title">
-                        <h2 class="mb-0">Laboratorium</h2>
+                        <h2 class="mb-0">Dokter Patalogi</h2>
                      </div>
                   </div>
                </div>
@@ -54,20 +54,18 @@ require "components/modal/modal.php";
                   <span>List of Pemeriksaan Laboratorium</span>
                   <button class="btn btn-primary btn-sm"
                      data-bs-toggle="modal"
-                     data-bs-target="#modalMasterLab">
+                     data-bs-target="#modalMasterDokterPA">
                      <i class="bi bi-plus"></i> Tambah
                   </button>
                </div>
                <div class="card-body">
                   <div class="table-responsive">
-                     <table id="LabTable" class="table table-striped table-bordered w-100">
+                     <table id="PATable" class="table table-striped table-bordered w-100">
                         <thead>
                            <tr>
                               <th>No</th>
-                              <th class="col-2">Kode</th>
-                              <th>Pemeriksaan</th>
-                              <th>Tarif</th>
-                              <th>Parameter</th>
+                              <th>No.SIP</th>
+                              <th>Nama Dokter PA</th>
                               <th>Status</th>
                               <th class="text-center col-3">Actions</th>
                            </tr>
@@ -84,6 +82,6 @@ require "components/modal/modal.php";
    <?php require 'partial/library.php' ?>
 </body>
 <!-- [Body] end -->
-<script src="../assets/js/master_lab.js"></script>
+<script src="../assets/js/master_dokter_pa.js"></script>
 
 </html>
