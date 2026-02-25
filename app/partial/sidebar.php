@@ -72,7 +72,7 @@
                <label>Aktivitas Lab</label>
             </li>
             <li class="pc-item pc-hasmenu">
-               <a href="#!" class="pc-link"><span class="pc-micon">
+               <a href="javascript:;" class="pc-link"><span class="pc-micon">
                      <svg class="pc-icon">
                         <use xlink:href="#custom-level"></use>
                      </svg> </span><span class="pc-mtext">Master Data</span><span class="pc-arrow"><i data-feather="chevron-right"></i></span></a>
