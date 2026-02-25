@@ -80,7 +80,7 @@
                   <li class="pc-item"><a class="pc-link" href="master_lab">Laboratorium</a></li>
                   <li class="pc-item"><a class="pc-link" href="master_dokter_patalogi">Dokter Patologi</a></li>
                   <li class="pc-item"><a class="pc-link" href="master_petugas_lab">Petugas</a></li>
-                  <li class="pc-item"><a class="pc-link" href="#">Print Out</a></li>
+                  <li class="pc-item"><a class="pc-link" href="master_print_lab">Print Out</a></li>
                </ul>
             </li>
             <li class="pc-item">
@@ -157,6 +157,9 @@
          ],
          master_petugas_lab: [
             "master_petugas_lab",
+         ],
+         master_print_lab: [
+            "master_print_lab",
          ],
       };
 
