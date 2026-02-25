@@ -7,18 +7,20 @@ $method = $_SERVER["REQUEST_METHOD"];
 /* ================= LIST ================= */
 if ($method === "GET" && !isset($_GET["id"])) {
 
-   $sql = "
-      SELECT 
-         d.*,
-         COUNT(i.id) AS total_item
-      FROM laboratorium_detail d
-      LEFT JOIN laboratorium_item i 
-         ON i.kode = d.kode
-      GROUP BY d.id
-      ORDER BY d.id DESC
-   ";
+   $kode = $_GET['kode'] ?? '';
 
-   $q = mysqli_query($conn, $sql);
+   if ($kode) {
+      $kode = mysqli_real_escape_string($conn, $kode);
+      $where = "WHERE kode='$kode'";
+   } else {
+      $where = "";
+   }
+
+   $q = mysqli_query($conn, "
+      SELECT * FROM laboratorium_item
+      $where
+      ORDER BY urutan ASC
+   ");
 
    $data = [];
    while ($row = mysqli_fetch_assoc($q)) {
@@ -32,7 +34,7 @@ if ($method === "GET" && !isset($_GET["id"])) {
 /* ================= DETAIL ================= */
 if ($method === "GET" && isset($_GET["id"])) {
    $id = (int)$_GET["id"];
-   $q  = mysqli_query($conn, "SELECT * FROM laboratorium_detail WHERE id=$id LIMIT 1");
+   $q  = mysqli_query($conn, "SELECT * FROM laboratorium_item WHERE id=$id LIMIT 1");
 
    echo json_encode(mysqli_fetch_assoc($q));
    exit;
@@ -42,11 +44,16 @@ if ($method === "GET" && isset($_GET["id"])) {
 if ($method === "POST" && ($_POST["mode"] ?? '') === "create") {
 
    $kode = mysqli_real_escape_string($conn, $_POST["kode"]);
-   $pemeriksaan = mysqli_real_escape_string($conn, $_POST["pemeriksaan"] ?? "");
-   $tarif = mysqli_real_escape_string($conn, $_POST["tarif"] ?? "");
+   $urutan = mysqli_real_escape_string($conn, $_POST["urutan"] ?? "");
+   $assemen = mysqli_real_escape_string($conn, $_POST["assemen"] ?? "");
+   $ass_alat = mysqli_real_escape_string($conn, $_POST["ass_alat"] ?? "");
+   $minimum = mysqli_real_escape_string($conn, $_POST["minimum"] ?? "");
+   $maksimum = mysqli_real_escape_string($conn, $_POST["maksimum"] ?? "");
+   $catatan = mysqli_real_escape_string($conn, $_POST["catatan"] ?? "");
+   $catatan = mysqli_real_escape_string($conn, $_POST["catatan"] ?? "");
 
-   $sql = "INSERT INTO laboratorium_detail (kode, assemen, tarif)
-           VALUES ('$kode', '$pemeriksaan', '$tarif')";
+   $sql = "INSERT INTO laboratorium_item (kode, urutan, assemen, ass_alat, minimum, maksimum, catatan)
+           VALUES ('$kode', '$urutan', '$assemen', '$ass_alat', '$minimum', '$maksimum', '$catatan')";
 
    if (!mysqli_query($conn, $sql)) {
       echo json_encode([
@@ -66,13 +73,23 @@ if ($method === "POST" && ($_POST["mode"] ?? '') === "update") {
    $id = (int)($_POST["id"] ?? 0);
 
    $kode = mysqli_real_escape_string($conn, $_POST["kode"] ?? "");
-   $pemeriksaan = mysqli_real_escape_string($conn, $_POST["pemeriksaan"] ?? "");
-   $tarif = mysqli_real_escape_string($conn, $_POST["tarif"] ?? "");
+   $urutan = mysqli_real_escape_string($conn, $_POST["urutan"] ?? "");
+   $assemen = mysqli_real_escape_string($conn, $_POST["assemen"] ?? "");
+   $ass_alat = mysqli_real_escape_string($conn, $_POST["ass_alat"] ?? "");
+   $minimum = mysqli_real_escape_string($conn, $_POST["minimum"] ?? "");
+   $maksimum = mysqli_real_escape_string($conn, $_POST["maksimum"] ?? "");
+   $catatan = mysqli_real_escape_string($conn, $_POST["catatan"] ?? "");
+   $satuan = mysqli_real_escape_string($conn, $_POST["satuan"] ?? "");
 
-   $sql = "UPDATE laboratorium_detail SET
+   $sql = "UPDATE laboratorium_item SET
            kode='$kode',
-           assemen='$pemeriksaan',
-           tarif='$tarif'
+           urutan='$urutan',
+           assemen='$assemen',
+           ass_alat='$ass_alat',
+           minimum='$minimum',
+           maksimum='$maksimum',
+           catatan='$catatan',
+           satuan='$satuan'
            WHERE id=$id";
 
    if (!mysqli_query($conn, $sql)) {
@@ -91,7 +108,7 @@ if ($method === "POST" && ($_POST["mode"] ?? '') === "update") {
 if ($method === "POST" && ($_POST["mode"] ?? '') === "delete") {
 
    $id = (int)$_POST["id"];
-   mysqli_query($conn, "DELETE FROM laboratorium_detail WHERE id=$id");
+   mysqli_query($conn, "DELETE FROM laboratorium_item WHERE id=$id");
 
    echo json_encode(["message" => "Berhasil dihapus"]);
    exit;
@@ -108,7 +125,7 @@ if ($method === "POST" && ($_POST["mode"] ?? '') === "toggle_status") {
       exit;
    }
 
-   $sql = "UPDATE laboratorium_detail SET status=$status WHERE id=$id";
+   $sql = "UPDATE laboratorium_item SET status=$status WHERE id=$id";
 
    if (!mysqli_query($conn, $sql)) {
       echo json_encode([

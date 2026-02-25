@@ -139,58 +139,58 @@
 <?php require 'header.php'; ?>
 <script>
    document.addEventListener("DOMContentLoaded", () => {
+
       const path = window.location.pathname;
       const file = path.substring(path.lastIndexOf('/') + 1);
       const page = file.split("?")[0].replace(".php", "");
 
-      /* ============================================
-         Halaman turunan yang tetap dianggap CONTRACT
-      ============================================ */
-      const contractPages = ["contract", "contract_detail", "contract_invoice"];
+      /* ==============================
+         Mapping menu parent
+      ============================== */
+      const menuMapping = {
+         master_lab: [
+            "master_lab",
+            "master_lab_parameter",
+            "master_lab_edit",
+            "master_lab_item"
+         ],
+      };
 
-      /* ============================================
-         MASTER KATEGORI yang punya anak page
-         (jika perlu tambah mapping lain)
-      ============================================ */
-      const menuMapping = [{
-            base: "product",
-            pages: ["product", "product_detail", "product_price"]
-         },
-         {
-            base: "project",
-            pages: ["project", "project_detail", "project_revenue"]
-         },
-         {
-            base: "contract",
-            pages: contractPages
-         }
-      ];
+      let activeMenu = page;
 
-      let activeMenu = page; // default: sama dengan nama file
-
-      // cari apakah page termasuk kelompok yang mapped
-      menuMapping.forEach(map => {
-         if (map.pages.includes(page)) {
-            activeMenu = map.base;
+      // cek apakah page termasuk child menu
+      Object.keys(menuMapping).forEach(base => {
+         if (menuMapping[base].includes(page)) {
+            activeMenu = base;
          }
       });
 
-      // selector menu berdasarkan hasil mapping
-      const selector = `.pc-navbar a.pc-link[href="${activeMenu}"]`;
-      const activeLink = document.querySelector(selector);
+      /* ==============================
+         Cari link sidebar
+      ============================== */
+      const activeLink = document.querySelector(
+         `.pc-navbar a.pc-link[href="${activeMenu}"]`
+      );
 
-      if (activeLink) {
-         const item = activeLink.closest(".pc-item");
-         if (item) item.classList.add("active");
+      if (!activeLink) return;
 
-         const submenu = activeLink.closest(".pc-submenu");
-         if (submenu) {
-            const parent = submenu.closest(".pc-hasmenu");
-            if (parent) {
-               parent.classList.add("active", "open", "pc-trigger");
-               submenu.classList.add("show");
-            }
-         }
+      /* ==============================
+         Aktifkan menu item
+      ============================== */
+      const item = activeLink.closest(".pc-item");
+      if (item) item.classList.add("active");
+
+      /* ==============================
+         Aktifkan parent dropdown
+      ============================== */
+      const parentMenu = activeLink.closest(".pc-hasmenu");
+
+      if (parentMenu) {
+         parentMenu.classList.add("active", "open", "pc-trigger");
+
+         const submenu = parentMenu.querySelector(".pc-submenu");
+         if (submenu) submenu.classList.add("show");
       }
+
    });
 </script>

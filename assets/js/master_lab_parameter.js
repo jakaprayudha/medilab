@@ -1,87 +1,124 @@
+function shortText(text, max = 25) {
+  if (!text) return "-";
+  if (text.length <= max) return text;
+
+  return `
+    <span class="text-truncate d-inline-block" style="max-width:150px">
+      ${text.substring(0, max)}...
+    </span>
+    <a href="#" class="text-primary btn-detail-text ms-1"
+       data-text="${encodeURIComponent(text)}">
+       selengkapnya
+    </a>
+  `;
+}
 // ==========================================================
 //   DATA TABLE
 // ==========================================================
-function formatRupiah(angka) {
-  if (!angka) return "Rp 0";
-  return "Rp " + Number(angka).toLocaleString("id-ID");
-}
+const urlParams = new URLSearchParams(window.location.search);
+const kode = urlParams.get("kode");
 const tableLab = $("#LabTable").DataTable({
   pageLength: 10,
   processing: true,
   responsive: true,
   ajax: {
     dataType: "json",
-    url: "../api/master_lab",
+    url: "../api/master_lab_parameter",
     type: "GET",
+
+    data: function (d) {
+      d.kode = kode;
+    },
     dataSrc: "",
   },
   columns: [
-    { data: null },
-    { data: "kode" },
-    { data: "assemen" },
-    { data: "tarif" },
-    { data: "total_item" },
-    { data: "status" },
-    { data: "id" },
+    { data: null }, // 0 No
+    { data: "urutan" }, // 1
+    { data: "assemen" }, // 2
+    { data: "ass_alat" }, // 3
+    { data: "satuan" }, // 4
+    { data: "minimum" }, // 5
+    { data: "maksimum" }, // 6
+    { data: "catatan" }, // 7
+    { data: "status" }, // 8 Toggle
+    { data: "id" }, // 9 Action
   ],
+
   columnDefs: [
     {
       targets: 0,
+      className: "text-center",
       render: (d, t, r, m) => m.row + 1,
     },
+
     {
-      targets: 3,
-      className: "text-end fw-semibold",
-      render: function (data) {
-        return formatRupiah(data);
-      },
-    },
-    {
-      targets: 4,
+      targets: [3, 4],
       className: "text-center",
-      render: function (data, type, row) {
-        return `<span class="badge bg-info">${data ?? 0} Parameter</span>`;
-      },
+      render: (data) => data || "-",
     },
+
     {
       targets: 5,
+      render: (data) => shortText(data, 20),
+    },
+    {
+      targets: 6,
+      render: (data) => shortText(data, 20),
+    },
+    {
+      targets: 7,
+      render: (data) => shortText(data, 30),
+    },
+
+    /* ================= STATUS TOGGLE ================= */
+    {
+      targets: 8,
       className: "text-center",
       render: function (data, type, row) {
         const checked = data == 1 ? "checked" : "";
 
         return `
-      <div class="form-check form-switch d-flex justify-content-center">
-        <input class="form-check-input toggle-status"
-               type="checkbox"
-               data-id="${row.id}"
-               ${checked}>
-      </div>
-    `;
+          <div class="form-check form-switch d-flex justify-content-center">
+            <input class="form-check-input toggle-status"
+                   type="checkbox"
+                   data-id="${row.id}"
+                   ${checked}>
+          </div>
+        `;
       },
     },
+
+    /* ================= ACTION ================= */
     {
-      targets: 6,
+      targets: 9,
       className: "text-center",
-      render: function (id, type, row) {
+      render: function (id) {
         return `
-      <button class="btn btn-info btn-sm btn-detail action-btn"
-              data-kode="${row.kode}">
-        <i class="bi bi-list"></i> Detail
-      </button>
+          <button class="btn btn-warning btn-sm btn-edit"
+                  data-id="${id}">
+            <i class="bi bi-pencil-square"></i>
+          </button>
 
-      <button class="btn btn-warning btn-sm btn-edit action-btn"
-              data-id="${id}">
-        <i class="bi bi-pencil-square"></i> Edit
-      </button>
-
-      <button class="btn btn-danger btn-sm btn-delete action-btn"
-              data-id="${id}">
-        <i class="bi bi-trash"></i> Hapus
-      </button>
-    `;
+          <button class="btn btn-danger btn-sm btn-delete"
+                  data-id="${id}">
+            <i class="bi bi-trash"></i>
+          </button>
+        `;
       },
     },
   ],
+});
+
+$("#LabTable").on("click", ".btn-detail-text", function (e) {
+  e.preventDefault();
+
+  const text = decodeURIComponent($(this).data("text"));
+
+  Swal.fire({
+    title: "Detail",
+    html: `<div style="text-align:left">${text}</div>`,
+    width: 500,
+  });
 });
 $("#LabTable").on("change", ".toggle-status", function () {
   const id = $(this).data("id");
@@ -89,7 +126,7 @@ $("#LabTable").on("change", ".toggle-status", function () {
   const el = $(this);
 
   $.ajax({
-    url: "../api/master_lab",
+    url: "../api/master_lab_parameter",
     type: "POST",
     dataType: "json",
     data: {
@@ -116,13 +153,18 @@ $("#btnSaveMasterLab").on("click", function () {
   const mode = id ? "update" : "create";
 
   $.post(
-    "../api/master_lab",
+    "../api/master_lab_parameter",
     {
       mode,
       id,
       kode: $("#kode").val(),
-      pemeriksaan: $("#pemeriksaan").val(),
-      tarif: $("#tarif").val(),
+      assemen: $("#assemen").val(),
+      ass_alat: $("#ass_alat").val(),
+      minimum: $("#minimum").val(),
+      maksimum: $("#maksimum").val(),
+      satuan: $("#satuan").val(),
+      catatan: $("#catatan").val(),
+      urutan: $("#urutan").val(),
     },
     (res) => {
       showToast(res.message, "success");
@@ -140,13 +182,18 @@ $(document).on("click", ".btn-edit", function () {
   const id = $(this).data("id");
 
   $.get(
-    "../api/master_lab",
+    "../api/master_lab_parameter",
     { id: id },
     function (res) {
       $("#id").val(res.id);
       $("#kode").val(res.kode);
-      $("#pemeriksaan").val(res.assemen);
-      $("#tarif").val(res.tarif);
+      $("#assemen").val(res.assemen);
+      $("#ass_alat").val(res.ass_alat);
+      $("#minimum").val(res.minimum);
+      $("#maksimum").val(res.maksimum);
+      $("#satuan").val(res.satuan);
+      $("#catatan").val(res.catatan);
+      $("#urutan").val(res.urutan);
 
       $("#modalMasterLab").modal("show");
     },
@@ -172,7 +219,7 @@ $(document).on("click", ".btn-delete", function () {
   }).then((r) => {
     if (!r.isConfirmed) return;
     $.post(
-      "../api/master_lab",
+      "../api/master_lab_parameter",
       { mode: "delete", id: id },
       function (res) {
         showToast(res.message, "warning");

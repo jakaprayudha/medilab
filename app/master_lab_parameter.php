@@ -4,8 +4,8 @@
 <?php require 'partial/head.php'; ?>
 <?php
 $modalId = "modalMasterLab";
-$title   = "Tambah Master Lab";
-$content = "forms/master_lab_frm.php"; // isi field Master Lab
+$title   = "Tambah Master Lab Parameter";
+$content = "forms/master_lab_param_frm.php"; // isi field Master Lab
 $submitId = "btnSaveMasterLab";
 require "components/modal/modal.php";
 ?>
@@ -34,12 +34,13 @@ require "components/modal/modal.php";
                   <div class="col-md-12">
                      <ul class="breadcrumb">
                         <li class="breadcrumb-item"><a href="index">Home</a></li>
-                        <li class="breadcrumb-item" aria-current="page">Pemerikasan Laboratorium</li>
+                        <li class="breadcrumb-item"><a href="master_lab">Pemerikasan Laboratorium</a></li>
+                        <li class="breadcrumb-item" aria-current="page">Parameter</li>
                      </ul>
                   </div>
                   <div class="col-md-12">
                      <div class="page-header-title">
-                        <h2 class="mb-0">Laboratorium</h2>
+                        <h2 class="mb-0">Parameter</h2>
                      </div>
                   </div>
                </div>
@@ -51,12 +52,24 @@ require "components/modal/modal.php";
          <div class="row">
             <div class="card">
                <div class="card-header d-flex justify-content-between align-items-center">
-                  <span>List of Pemeriksaan Laboratorium</span>
-                  <button class="btn btn-primary btn-sm"
-                     data-bs-toggle="modal"
-                     data-bs-target="#modalMasterLab">
-                     <i class="bi bi-plus"></i> Tambah
-                  </button>
+
+                  <!-- Kiri -->
+                  <span class="fw-semibold">List of Parameter</span>
+
+                  <!-- Kanan -->
+                  <div class="d-flex gap-2">
+                     <button class="btn btn-light btn-sm"
+                        onclick="window.history.back()">
+                        <i class="bi bi-arrow-left"></i> Kembali
+                     </button>
+
+                     <button class="btn btn-primary btn-sm"
+                        data-bs-toggle="modal"
+                        data-bs-target="#modalMasterLab">
+                        <i class="bi bi-plus"></i> Tambah
+                     </button>
+                  </div>
+
                </div>
                <div class="card-body">
                   <div class="table-responsive">
@@ -64,11 +77,14 @@ require "components/modal/modal.php";
                         <thead>
                            <tr>
                               <th>No</th>
-                              <th class="col-2">Kode</th>
-                              <th>Pemeriksaan</th>
-                              <th>Tarif</th>
+                              <th>Urutan</th>
                               <th>Parameter</th>
-                              <th>H/L Status</th>
+                              <th>LIS</th>
+                              <th>Satuan</th>
+                              <th>Minimum</th>
+                              <th>Maksimum</th>
+                              <th>Catatan</th>
+                              <th>Status</th>
                               <th class="text-center col-3">Actions</th>
                            </tr>
                         </thead>
@@ -84,6 +100,6 @@ require "components/modal/modal.php";
    <?php require 'partial/library.php' ?>
 </body>
 <!-- [Body] end -->
-<script src="../assets/js/master_lab.js"></script>
+<script src="../assets/js/master_lab_parameter.js"></script>
 
 </html>
