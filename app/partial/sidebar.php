@@ -77,7 +77,7 @@
                         <use xlink:href="#custom-level"></use>
                      </svg> </span><span class="pc-mtext">Master Data</span><span class="pc-arrow"><i data-feather="chevron-right"></i></span></a>
                <ul class="pc-submenu">
-                  <li class="pc-item"><a class="pc-link" href="#">Laboratorium</a></li>
+                  <li class="pc-item"><a class="pc-link" href="master_lab">Laboratorium</a></li>
                   <li class="pc-item"><a class="pc-link" href="#">Dokter Patologi</a></li>
                   <li class="pc-item"><a class="pc-link" href="#">Petugas</a></li>
                   <li class="pc-item"><a class="pc-link" href="#">Print Out</a></li>
