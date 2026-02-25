@@ -1,78 +1,37 @@
-function shortText(text, max = 25) {
-  if (!text) return "-";
-  if (text.length <= max) return text;
-
-  return `
-    <span class="text-truncate d-inline-block" style="max-width:150px">
-      ${text.substring(0, max)}...
-    </span>
-    <a href="#" class="text-primary btn-detail-text ms-1"
-       data-text="${encodeURIComponent(text)}">
-       selengkapnya
-    </a>
-  `;
-}
 // ==========================================================
 //   DATA TABLE
 // ==========================================================
-const urlParams = new URLSearchParams(window.location.search);
-const kode = urlParams.get("kode");
-const tableLab = $("#LabTable").DataTable({
+const tableDokterPA = $("#PATable").DataTable({
   pageLength: 10,
   processing: true,
   responsive: true,
   ajax: {
     dataType: "json",
-    url: "../api/master_lab_parameter",
+    url: "../api/master_petugas_lab",
     type: "GET",
-
-    data: function (d) {
-      d.kode = kode;
-    },
     dataSrc: "",
   },
+
   columns: [
     { data: null }, // 0 No
-    { data: "urutan" }, // 1
-    { data: "assemen" }, // 2
-    { data: "ass_alat" }, // 3
-    { data: "satuan" }, // 4
-    { data: "minimum" }, // 5
-    { data: "maksimum" }, // 6
-    { data: "catatan" }, // 7
-    { data: "status" }, // 8 Toggle
-    { data: "id" }, // 9 Action
+    { data: "fullname" },
+    { data: "username" },
+    { data: "create_at" },
+    { data: "status_user" },
+    { data: "id" }, // 4 Action
   ],
 
   columnDefs: [
+    /* ================= NO ================= */
     {
       targets: 0,
       className: "text-center",
       render: (d, t, r, m) => m.row + 1,
     },
 
-    {
-      targets: [3, 4],
-      className: "text-center",
-      render: (data) => data || "-",
-    },
-
-    {
-      targets: 5,
-      render: (data) => shortText(data, 20),
-    },
-    {
-      targets: 6,
-      render: (data) => shortText(data, 20),
-    },
-    {
-      targets: 7,
-      render: (data) => shortText(data, 30),
-    },
-
     /* ================= STATUS TOGGLE ================= */
     {
-      targets: 8,
+      targets: 4,
       className: "text-center",
       render: function (data, type, row) {
         const checked = data == 1 ? "checked" : "";
@@ -90,7 +49,7 @@ const tableLab = $("#LabTable").DataTable({
 
     /* ================= ACTION ================= */
     {
-      targets: 9,
+      targets: 5,
       className: "text-center",
       render: function (id) {
         return `
@@ -108,25 +67,13 @@ const tableLab = $("#LabTable").DataTable({
     },
   ],
 });
-
-$("#LabTable").on("click", ".btn-detail-text", function (e) {
-  e.preventDefault();
-
-  const text = decodeURIComponent($(this).data("text"));
-
-  Swal.fire({
-    title: "Detail",
-    html: `<div style="text-align:left">${text}</div>`,
-    width: 500,
-  });
-});
-$("#LabTable").on("change", ".toggle-status", function () {
+$("#PATable").on("change", ".toggle-status", function () {
   const id = $(this).data("id");
   const status = $(this).is(":checked") ? 1 : 0;
   const el = $(this);
 
   $.ajax({
-    url: "../api/master_lab_parameter",
+    url: "../api/master_petugas_lab",
     type: "POST",
     dataType: "json",
     data: {
@@ -148,28 +95,23 @@ $("#LabTable").on("change", ".toggle-status", function () {
 // ==========================================================
 //  SAVE  (CREATE / UPDATE)
 // ==========================================================
-$("#btnSaveMasterLab").on("click", function () {
+$("#btnSaveMasterPetugasLab").on("click", function () {
   const id = $("#id").val();
   const mode = id ? "update" : "create";
 
   $.post(
-    "../api/master_lab_parameter",
+    "../api/master_petugas_lab",
     {
       mode,
       id,
-      kode: $("#kode").val(),
-      assemen: $("#assemen").val(),
-      ass_alat: $("#ass_alat").val(),
-      minimum: $("#minimum").val(),
-      maksimum: $("#maksimum").val(),
-      satuan: $("#satuan").val(),
-      catatan: $("#catatan").val(),
-      urutan: $("#urutan").val(),
+      fullname: $("#fullname").val(),
+      username: $("#username").val(),
+      password: $("#password").val(),
     },
     (res) => {
       showToast(res.message, "success");
-      $("#modalMasterLab").modal("hide");
-      tableLab.ajax.reload(null, false);
+      $("#modalMasterPetugasLab").modal("hide");
+      tableDokterPA.ajax.reload(null, false);
     },
     "json",
   );
@@ -182,20 +124,15 @@ $(document).on("click", ".btn-edit", function () {
   const id = $(this).data("id");
 
   $.get(
-    "../api/master_lab_parameter",
+    "../api/master_petugas_lab",
     { id: id },
     function (res) {
       $("#id").val(res.id);
-      $("#kode").val(res.kode);
-      $("#assemen").val(res.assemen);
-      $("#ass_alat").val(res.ass_alat);
-      $("#minimum").val(res.minimum);
-      $("#maksimum").val(res.maksimum);
-      $("#satuan").val(res.satuan);
-      $("#catatan").val(res.catatan);
-      $("#urutan").val(res.urutan);
+      $("#fullname").val(res.fullname);
+      $("#username").val(res.username);
+      $("#password").val(res.password);
 
-      $("#modalMasterLab").modal("show");
+      $("#modalMasterPetugasLab").modal("show");
     },
     "json",
   );
@@ -219,17 +156,16 @@ $(document).on("click", ".btn-delete", function () {
   }).then((r) => {
     if (!r.isConfirmed) return;
     $.post(
-      "../api/master_lab_parameter",
+      "../api/master_petugas_lab",
       { mode: "delete", id: id },
       function (res) {
         showToast(res.message, "warning");
-        tableLab.ajax.reload(null, false);
+        tableDokterPA.ajax.reload(null, false);
       },
       "json",
     );
   });
 });
-
 // ==========================================================
 //  TOAST
 // ==========================================================

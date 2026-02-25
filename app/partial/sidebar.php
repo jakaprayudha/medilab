@@ -79,7 +79,7 @@
                <ul class="pc-submenu">
                   <li class="pc-item"><a class="pc-link" href="master_lab">Laboratorium</a></li>
                   <li class="pc-item"><a class="pc-link" href="master_dokter_patalogi">Dokter Patologi</a></li>
-                  <li class="pc-item"><a class="pc-link" href="#">Petugas</a></li>
+                  <li class="pc-item"><a class="pc-link" href="master_petugas_lab">Petugas</a></li>
                   <li class="pc-item"><a class="pc-link" href="#">Print Out</a></li>
                </ul>
             </li>
@@ -154,6 +154,9 @@
          ],
          master_dokter_patalogi: [
             "master_dokter_patalogi",
+         ],
+         master_petugas_lab: [
+            "master_petugas_lab",
          ],
       };
 

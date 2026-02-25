@@ -164,12 +164,6 @@ $(document).on("click", ".btn-delete", function () {
   });
 });
 
-$("#PATable").on("click", ".btn-detail", function () {
-  const kode = $(this).data("kode");
-  // redirect ke halaman parameter
-  window.location.href = `master_lab_parameter?kode=${kode}`;
-});
-
 // ==========================================================
 //  TOAST
 // ==========================================================
