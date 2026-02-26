@@ -1,0 +1,151 @@
+<?php
+header("Content-Type: application/json");
+require_once "../database/db.php";
+
+$method = $_SERVER["REQUEST_METHOD"];
+
+/* ================= LIST ================= */
+if ($method === "GET" && !isset($_GET["id"])) {
+
+   $sql = "SELECT *
+      FROM permintaan_lab_detail 
+      ORDER BY id DESC
+   ";
+
+   $q = mysqli_query($conn, $sql);
+
+   $data = [];
+   while ($row = mysqli_fetch_assoc($q)) {
+      $data[] = $row;
+   }
+
+   echo json_encode($data);
+   exit;
+}
+
+/* ================= DETAIL ================= */
+if ($method === "GET" && isset($_GET["id"])) {
+   $id = (int)$_GET["id"];
+   $q  = mysqli_query($conn, "SELECT * FROM permintaan_lab_detail WHERE id=$id LIMIT 1");
+
+   echo json_encode(mysqli_fetch_assoc($q));
+   exit;
+}
+
+/* ================= CREATE ================= */
+if ($method === "POST" && ($_POST["mode"] ?? '') === "create") {
+   // ================= GENERATE NO PERMINTAAN =================
+
+   $nomor_rm = mysqli_real_escape_string($conn, $_POST["nomor_rm"]);
+   $nomor_visit = mysqli_real_escape_string($conn, $_POST["nomor_visit"] ?? "");
+   $lab = mysqli_real_escape_string($conn, $_POST["pemeriksaan_id"] ?? "");
+   $nomor_lab = mysqli_real_escape_string($conn, $_POST["nomor_lab"] ?? "");
+   $catatan = mysqli_real_escape_string($conn, $_POST["catatan"] ?? "");
+
+
+
+   $sql = "INSERT INTO permintaan_lab_detail (nomor_rm, nopermintaan, lab, catatan)
+           VALUES ('$nomor_rm', '$nomor_lab', '$lab', '$catatan')";
+
+   if (!mysqli_query($conn, $sql)) {
+      echo json_encode([
+         "message" => "Gagal insert",
+         "error" => mysqli_error($conn)
+      ]);
+      exit;
+   }
+
+   echo json_encode(["message" => "Berhasil ditambahkan"]);
+   exit;
+}
+
+/* ================= DELETE ================= */
+if ($method === "POST" && ($_POST["mode"] ?? '') === "delete") {
+
+   $id = (int)$_POST["id"];
+
+   // ===== AMBIL DATA PERMINTAAN =====
+   $q = mysqli_query($conn, "SELECT nopermintaan, lab 
+      FROM permintaan_lab_detail
+      WHERE id = $id
+      LIMIT 1
+   ");
+
+   if (!$q || mysqli_num_rows($q) == 0) {
+      echo json_encode([
+         "success" => false,
+         "message" => "Data tidak ditemukan"
+      ]);
+      exit;
+   }
+
+   $row = mysqli_fetch_assoc($q);
+   $nopermintaan = mysqli_real_escape_string($conn, $row["nopermintaan"]);
+   $nomor_rm = mysqli_real_escape_string($conn, $row["nomor_rm"]);
+   $lab =  mysqli_real_escape_string($conn, $row["lab"]);
+
+   // ===== CEK ADA DETAIL =====
+   $cek = mysqli_query($conn, "SELECT id
+      FROM hasil_lab
+      WHERE permintaan = '$nopermintaan'
+      AND lab = '$lab'
+      LIMIT 1
+   ");
+
+   if (mysqli_num_rows($cek) > 0) {
+
+      echo json_encode([
+         "success" => false,
+         "message" => "Tidak bisa dihapus, sudah ada detail pemeriksaan"
+      ]);
+      exit;
+   }
+
+   // ===== HAPUS =====
+   if (mysqli_query($conn, "DELETE FROM permintaan_lab_detail WHERE id=$id")) {
+
+      echo json_encode([
+         "success" => true,
+         "message" => "Berhasil dihapus"
+      ]);
+   } else {
+
+      echo json_encode([
+         "success" => false,
+         "message" => "Gagal hapus",
+         "error" => mysqli_error($conn)
+      ]);
+   }
+
+   exit;
+}
+/* ================= TOGGLE STATUS ================= */
+if ($method === "POST" && ($_POST["mode"] ?? '') === "toggle_status") {
+
+   $id = (int)($_POST["id"] ?? 0);
+   $status = (int)($_POST["status"] ?? 0);
+
+   if (!$id) {
+      echo json_encode(["message" => "ID tidak valid"]);
+      exit;
+   }
+
+   $sql = "UPDATE permintaan_lab_detail SET status=$status WHERE id=$id";
+
+   if (!mysqli_query($conn, $sql)) {
+      echo json_encode([
+         "message" => "Gagal update status",
+         "error" => mysqli_error($conn)
+      ]);
+      exit;
+   }
+
+   echo json_encode([
+      "message" => "Status berhasil diperbarui"
+   ]);
+   exit;
+}
+
+/* ================= FALLBACK ================= */
+echo json_encode(["message" => "Invalid Request"]);
+exit;
