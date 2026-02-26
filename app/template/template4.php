@@ -10,6 +10,19 @@ $time = date(
    "d-m-Y H:i",
    strtotime(($pasien['tanggal'] ?? '') . ' ' . ($pasien['waktu'] ?? ''))
 );
+$hist = [];
+
+$qHist = mysqli_query($conn, "
+   SELECT parameter, hasil
+   FROM hasil_lab
+   WHERE permintaan = '$no'
+   AND lab = '$lab'
+");
+
+while ($r = mysqli_fetch_assoc($qHist)) {
+   $hist[strtolower($r['parameter'])] = $r['hasil'];
+}
+
 ?>
 <!doctype html>
 <html>
@@ -85,7 +98,6 @@ Result
 $wbc = $hasil['wbc'] ?? 0;
 $f = flag($wbc, 5.0, 11.0);
 ?>
-
 <?= $f ?> <?= $wbc ?> x 10^9/L
 <?= $hasil['lymph#'] ?? '-' ?> x 10^9/L
 <?= $hasil['mid#'] ?? '-' ?> x 10^9/L
@@ -180,89 +192,21 @@ Result
 </body>
 <script>
    /* ================= DATA DARI PHP ================= */
-   const histogramData = <?= json_encode($hasil); ?>;
 
-   /* ================= UTIL ================= */
+   /* pakai data parameter asli */
+   const d = <?= json_encode($hist ?? []); ?>;
 
-   function scaleX(value, maxX, width) {
-      return (value / maxX) * width;
+   /* ================= GAUSSIAN ================= */
+
+   function gaussian(x, mean, sd, height) {
+      return height * Math.exp(-0.5 * Math.pow((x - mean) / sd, 2));
    }
 
-   function drawAxis(ctx, width, height, maxX) {
+   /* ================= DRAW ================= */
 
-      ctx.strokeStyle = "#000";
-      ctx.lineWidth = 1;
+   function drawChart(canvasId, labels, data, title) {
 
-      ctx.beginPath();
-      ctx.moveTo(0, height - 10);
-      ctx.lineTo(width, height - 10);
-      ctx.stroke();
-
-      ctx.font = "9px monospace";
-
-      for (let i = 0; i <= maxX; i += maxX / 3) {
-
-         let x = scaleX(i, maxX, width);
-
-         ctx.beginPath();
-         ctx.moveTo(x, height - 10);
-         ctx.lineTo(x, height - 5);
-         ctx.stroke();
-
-         ctx.fillText(Math.round(i), x - 6, height);
-      }
-   }
-
-   function drawGate(ctx, value, maxX, width, height) {
-
-      let x = scaleX(value, maxX, width);
-
-      ctx.save();
-      ctx.setLineDash([4, 4]);
-
-      ctx.beginPath();
-      ctx.moveTo(x, 0);
-      ctx.lineTo(x, height - 10);
-      ctx.stroke();
-
-      ctx.restore();
-
-      return x;
-   }
-
-   function drawCurve(ctx, points) {
-
-      ctx.beginPath();
-      ctx.moveTo(points[0][0], points[0][1]);
-
-      for (let p of points) {
-         ctx.lineTo(p[0], p[1]);
-      }
-
-      ctx.stroke();
-   }
-
-   function drawVerticalLabel(ctx, text, x, height) {
-
-      ctx.save();
-
-      ctx.translate(x, height / 2);
-      ctx.rotate(-Math.PI / 2);
-
-      ctx.font = "bold 9px monospace";
-      ctx.textAlign = "center";
-
-      ctx.fillText(text, 0, 0);
-
-      ctx.restore();
-   }
-
-
-   /* ================= CREATE CHART ================= */
-
-   function createChart(id, type) {
-
-      const c = document.getElementById(id);
+      const c = document.getElementById(canvasId);
       const ctx = c.getContext("2d");
 
       c.width = 180;
@@ -271,121 +215,96 @@ Result
       const w = c.width;
       const h = c.height;
 
-      ctx.lineWidth = 1.2;
+      ctx.clearRect(0, 0, w, h);
 
+      ctx.beginPath();
 
-      /* ================= WBC ================= */
+      for (let i = 0; i < data.length; i++) {
 
-      if (type === "wbc") {
+         let x = (i / data.length) * w;
+         let y = h - data[i] / Math.max(...data) * (h - 10);
 
-         const maxX = 300;
-
-         const wbcValue = Number(histogramData["wbc"] ?? 50);
-
-         drawAxis(ctx, w, h, maxX);
-
-         let g1 = drawGate(ctx, wbcValue, maxX, w, h);
-         let g2 = drawGate(ctx, 100, maxX, w, h);
-         let g3 = drawGate(ctx, 150, maxX, w, h);
-
-         drawVerticalLabel(ctx, "WBC", g1, h);
-
-         drawCurve(ctx, [
-            [0, 50],
-            [20, 40],
-            [40, 30],
-            [60, 35],
-            [80, 45],
-            [100, 50],
-            [130, 45],
-            [160, 30],
-            [200, 25],
-            [240, 20],
-            [280, 35],
-            [300, 50],
-         ]);
+         if (i === 0) ctx.moveTo(x, y);
+         else ctx.lineTo(x, y);
       }
 
+      ctx.strokeStyle = "#000";
+      ctx.stroke();
 
-      /* ================= RBC ================= */
-
-      if (type === "rbc") {
-
-         const maxX = 300;
-
-         const rbcValue = Number(histogramData["mcv"] ?? 90);
-
-         drawAxis(ctx, w, h, maxX);
-
-         let g = drawGate(ctx, rbcValue, maxX, w, h);
-
-         drawVerticalLabel(ctx, "RBC", g, h);
-
-         drawCurve(ctx, [
-            [0, 60],
-            [40, 50],
-            [70, 20],
-            [100, 5],
-            [130, 20],
-            [160, 50],
-            [200, 65],
-         ]);
-      }
-
-
-      /* ================= PLT ================= */
-
-      if (type === "plt") {
-
-         const maxX = 25;
-
-         const pltValue = Number(histogramData["plt"] ?? 15);
-
-         drawAxis(ctx, w, h, maxX);
-
-         let g = drawGate(ctx, pltValue, maxX, w, h);
-
-         drawVerticalLabel(ctx, "PLT", g, h);
-
-         drawCurve(ctx, [
-            [0, 60],
-            [20, 40],
-            [40, 20],
-            [80, 10],
-            [120, 20],
-            [150, 40],
-            [180, 60],
-         ]);
-      }
+      ctx.font = "10px monospace";
+      ctx.fillText(title, 5, 10);
    }
 
 
-   /* ================= INIT ================= */
+   /* ================= WBC ================= */
 
-   createChart("wbc", "wbc");
-   createChart("rbc", "rbc");
-   createChart("plt", "plt");
+   const lymph = Number(d["limfosit"] ?? 30);
+
+   const mid =
+      Number(d["monosit"] ?? 0) +
+      Number(d["eosinofil"] ?? 0) +
+      Number(d["basofil"] ?? 0);
+
+   const gran =
+      Number(d["neutrofil segmen"] ?? 0) +
+      Number(d["neutrofil batang"] ?? 0);
+
+   const wbcTotal = Number(d["leukosit"] ?? 8000);
+
+   const wbcLabels = Array.from({
+      length: 40
+   }, (_, i) => i * 10 + 50);
+
+   const wbcData = wbcLabels.map(x =>
+      gaussian(x, 90, 15, (lymph / 100) * wbcTotal) +
+      gaussian(x, 150, 20, (mid / 100) * wbcTotal) +
+      gaussian(x, 300, 40, (gran / 100) * wbcTotal)
+   );
 
 
-   /* ================= AUTO PRINT ================= */
+   /* ================= RBC ================= */
 
-   window.onload = function() {
+   const mcv = Number(d["mcv"] ?? 90);
+   const rdw = Number(d["rdw"] ?? 13);
 
-      setTimeout(() => {
-         window.print();
-         window.close();
-      }, 500);
+   const rbcLabels = Array.from({
+      length: 40
+   }, (_, i) => i * 5 + 60);
 
-   };
-</script>
-<script>
-   window.onload = function() {
-      window.print();
+   const rbcData = rbcLabels.map(x =>
+      gaussian(x, mcv, rdw, 100)
+   );
 
-      setTimeout(() => {
-         window.close();
-      }, 500);
-   };
+
+   /* ================= PLT ================= */
+
+   const mpv = Number(d["mpv"] ?? 10);
+   const pdw = Number(d["pdw"] ?? 12);
+
+   const pltLabels = Array.from({
+      length: 40
+   }, (_, i) => i * 2 + 2);
+
+   const pltData = pltLabels.map(x =>
+      gaussian(x, mpv, pdw / 2, 120)
+   );
+
+
+   /* ================= RENDER ================= */
+
+   drawChart("wbc", wbcLabels, wbcData, "WBC");
+   drawChart("rbc", rbcLabels, rbcData, "RBC");
+   drawChart("plt", pltLabels, pltData, "PLT");
+
+
+   /* ================= PRINT ================= */
+
+   // window.onload = () => {
+   //    setTimeout(() => {
+   //       window.print();
+   //       window.close();
+   //    }, 500);
+   // };
 </script>
 
 </html>
