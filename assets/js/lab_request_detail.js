@@ -1,3 +1,11 @@
+function getParam(name) {
+  const url = new URL(window.location.href);
+  return url.searchParams.get(name);
+}
+
+const nopermintaan = getParam("no");
+const nomor_rm = getParam("rm");
+const nomor_visit = getParam("visit");
 // ==========================================================
 //   DATA TABLE
 // ==========================================================
@@ -10,6 +18,11 @@ const tablePermintaan = $("#PermintaanTable").DataTable({
     dataType: "json",
     url: "../api/lab_request_test",
     type: "GET",
+    data: function (d) {
+      d.no = nopermintaan;
+      d.rm = nomor_rm;
+      d.visit = nomor_visit;
+    },
     dataSrc: "",
   },
   columns: [
@@ -207,15 +220,6 @@ function loadTest() {
     },
   });
 }
-
-function getParam(name) {
-  const url = new URL(window.location.href);
-  return url.searchParams.get(name);
-}
-
-const nopermintaan = getParam("no");
-const nomor_rm = getParam("rm");
-const nomor_visit = getParam("visit");
 
 function loadHeader() {
   $.ajax({

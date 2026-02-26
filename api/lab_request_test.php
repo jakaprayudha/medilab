@@ -51,8 +51,22 @@ if ($method === "GET" && ($_GET["mode"] ?? '') === "header") {
 /* ================= LIST ================= */
 if ($method === "GET" && !isset($_GET["id"])) {
 
+   $nopermintaan = mysqli_real_escape_string($conn, $_GET["no"] ?? '');
+   $nomor_rm     = mysqli_real_escape_string($conn, $_GET["rm"] ?? '');
+   $nomor_visit  = mysqli_real_escape_string($conn, $_GET["visit"] ?? '');
+
+   $where = "WHERE 1=1";
+
+   if ($nopermintaan != '') {
+      $where .= " AND nopermintaan = '$nopermintaan'";
+   }
+
+   if ($nomor_rm != '') {
+      $where .= " AND nomor_rm = '$nomor_rm'";
+   }
+
    $sql = "SELECT *
-      FROM permintaan_lab_detail 
+      FROM permintaan_lab_detail  $where
       ORDER BY id DESC
    ";
 
