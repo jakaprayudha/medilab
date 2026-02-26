@@ -95,7 +95,7 @@
                   <use xlink:href="#custom-box-1"></use>
                </svg>
             </li>
-            <li class="pc-item">
+            <!-- <li class="pc-item">
                <a href="invoice" class="pc-link"><span class="pc-micon">
                      <svg class="pc-icon">
                         <use xlink:href="#custom-document"></use>
@@ -106,9 +106,8 @@
                      <svg class="pc-icon">
                         <use xlink:href="#custom-text-block"></use>
                      </svg> </span><span class="pc-mtext">Riwayat</span></a>
-            </li>
-
-            <li class="pc-item"><a href="loans" class="pc-link">
+            </li> -->
+            <li class="pc-item"><a href="analyzer_calibration" class="pc-link">
                   <span class="pc-micon">
                      <svg class="pc-icon">
                         <use xlink:href="#custom-notification-status"></use>
@@ -163,6 +162,9 @@
          ],
          permintaan_lab: [
             "permintaan_lab",
+         ],
+         analyzer_calibration: [
+            "analyzer_calibration",
          ]
       };
 
