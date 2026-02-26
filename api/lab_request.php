@@ -8,7 +8,7 @@ $method = $_SERVER["REQUEST_METHOD"];
 if ($method === "GET" && !isset($_GET["id"])) {
 
    $sql = "SELECT 
-         d.*, pv.nama_pasien, pv.dokter,
+         d.*, pv.nama_pasien, pv.dokter, pv.sumber,
          COUNT(i.id) AS total_item
       FROM permintaan_lab d
       LEFT JOIN permintaan_lab_detail i 

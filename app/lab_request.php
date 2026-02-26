@@ -69,6 +69,7 @@ require "components/modal/modal.php";
                               <th>Nama Pasien</th>
                               <th>Dokter</th>
                               <th>Tanggal</th>
+                              <th>Sumber</th>
                               <th>Total Test</th>
                               <th>Nomor Visit</th>
                               <th>Status</th>

@@ -19,6 +19,7 @@ const tablePermintaan = $("#PermintaanTable").DataTable({
     { data: "nama_pasien" },
     { data: "dokter" },
     { data: "tanggal" },
+    { data: "sumber" },
     { data: "total_item" },
     { data: "catatan" }, // nomor visit
     { data: "status" },
@@ -44,7 +45,7 @@ const tablePermintaan = $("#PermintaanTable").DataTable({
 
     // total item
     {
-      targets: 6,
+      targets: 7,
       className: "text-center",
       render: function (data) {
         return `<span class="badge bg-info">${data ?? 0} Test</span>`;
@@ -53,7 +54,7 @@ const tablePermintaan = $("#PermintaanTable").DataTable({
 
     // status switch
     {
-      targets: 8,
+      targets: 9,
       className: "text-center",
       render: function (data, type, row) {
         const checked = data == 1 ? "checked" : "";
@@ -71,7 +72,7 @@ const tablePermintaan = $("#PermintaanTable").DataTable({
 
     // action buttons
     {
-      targets: 9,
+      targets: 10,
       className: "text-center",
       render: function (id, type, row) {
         return `
