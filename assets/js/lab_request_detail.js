@@ -163,6 +163,7 @@ function showToast(msg, type = "primary") {
   new bootstrap.Toast(toastEl).show();
 }
 $(document).ready(function () {
+  loadHeader();
   // modal dibuka
   $("#modalRequestLab").on("shown.bs.modal", function () {
     loadTest();
@@ -206,3 +207,48 @@ function loadTest() {
     },
   });
 }
+
+function getParam(name) {
+  const url = new URL(window.location.href);
+  return url.searchParams.get(name);
+}
+
+const nopermintaan = getParam("no");
+const nomor_rm = getParam("rm");
+const nomor_visit = getParam("visit");
+
+function loadHeader() {
+  $.ajax({
+    url: "../api/lab_request_test",
+    type: "GET",
+    dataType: "json",
+    data: {
+      mode: "header",
+      no: nopermintaan,
+      rm: nomor_rm,
+      visit: nomor_visit,
+    },
+    success: function (res) {
+      if (!res.success) return;
+
+      const d = res.data;
+
+      $("#d_nopermintaan").text(d.nopermintaan || "-");
+      $("#d_nama_pasien").text(d.nama_pasien || "-");
+      $("#d_nomor_rm").text(d.nomor_rm || "-");
+      $("#d_sumber").text(d.sumber || "-");
+      $("#d_dokter").text(d.dokter || "-");
+      $("#d_tanggal").text(d.tanggal || "-");
+      $("#d_waktu").text(d.waktu || "-");
+      $("#d_nomor_visit").text(d.nomor_visit || "-");
+      $("#d_total_item").text(res.total_item || 0);
+      $("#d_gender").text(d.gender || "-");
+      $("#d_tgl_lahir").text(d.tanggal_lahir || "-");
+      $("#d_usia").text(d.usia || "-");
+    },
+  });
+}
+
+$(document).ready(function () {
+  loadHeader();
+});

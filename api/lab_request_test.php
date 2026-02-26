@@ -4,6 +4,50 @@ require_once "../database/db.php";
 
 $method = $_SERVER["REQUEST_METHOD"];
 
+/* ================= HEADER PERMINTAAN ================= */
+if ($method === "GET" && ($_GET["mode"] ?? '') === "header") {
+
+   $nopermintaan = mysqli_real_escape_string($conn, $_GET["no"] ?? '');
+   $nomor_rm     = mysqli_real_escape_string($conn, $_GET["rm"] ?? '');
+   $nomor_visit  = mysqli_real_escape_string($conn, $_GET["visit"] ?? '');
+
+   $sql = "SELECT lab.*, ps.nama_pasien, ps.dokter, ps.nomor_visit,
+            ps.sumber, pv.gender, ps.usia, pv.tanggal_lahir
+           FROM permintaan_lab AS lab INNER JOIN pasien_visit AS ps ON ps.nomor_rm = lab.nomor_rm INNER JOIN pasien AS pv ON pv.nomor_rm = ps.nomor_rm
+           WHERE lab.nopermintaan = '$nopermintaan'
+           AND lab.nomor_rm = '$nomor_rm'
+           AND lab.catatan = '$nomor_visit'
+           LIMIT 1";
+
+   $q = mysqli_query($conn, $sql);
+
+   if (!$q || mysqli_num_rows($q) == 0) {
+      echo json_encode([
+         "success" => false,
+         "message" => "Data tidak ditemukan"
+      ]);
+      exit;
+   }
+
+   $row = mysqli_fetch_assoc($q);
+
+   // ===== HITUNG TOTAL ITEM =====
+   $q2 = mysqli_query($conn, "
+      SELECT COUNT(*) as total
+      FROM permintaan_lab_detail
+      WHERE nopermintaan = '$nopermintaan'
+   ");
+
+   $total = mysqli_fetch_assoc($q2)["total"] ?? 0;
+
+   echo json_encode([
+      "success" => true,
+      "data" => $row,
+      "total_item" => $total
+   ]);
+
+   exit;
+}
 /* ================= LIST ================= */
 if ($method === "GET" && !isset($_GET["id"])) {
 
@@ -145,6 +189,7 @@ if ($method === "POST" && ($_POST["mode"] ?? '') === "toggle_status") {
    ]);
    exit;
 }
+
 
 /* ================= FALLBACK ================= */
 echo json_encode(["message" => "Invalid Request"]);

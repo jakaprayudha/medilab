@@ -53,8 +53,7 @@ require "components/modal/modal.php";
                   <small>No Permintaan: <strong id="d_nopermintaan">-</strong></small>
                </div>
 
-               <span class="badge bg-warning text-dark fs-6" id="d_status">
-                  Draft
+               <span class="badge bg-success fs-6" id="d_dokter">
                </span>
             </div>
 
@@ -73,13 +72,23 @@ require "components/modal/modal.php";
                   </div>
 
                   <div class="col-md-3">
-                     <label class="text-muted small">Sumber</label>
-                     <div class="fw-semibold" id="d_sumber">-</div>
+                     <label class="text-muted small">Jenis Kelamin</label>
+                     <div class="fw-semibold" id="d_gender">-</div>
                   </div>
 
-                  <div class="col-md-6">
-                     <label class="text-muted small">Dokter Pengirim</label>
-                     <div class="fw-semibold" id="d_dokter">-</div>
+                  <div class="col-md-3">
+                     <label class="text-muted small">Tanggal Lahir</label>
+                     <div class="fw-semibold" id="d_tgl_lahir">-</div>
+                  </div>
+
+                  <div class="col-md-3">
+                     <label class="text-muted small">Usia</label>
+                     <div class="fw-semibold" id="d_usia">-</div>
+                  </div>
+
+                  <div class="col-md-3">
+                     <label class="text-muted small">Sumber</label>
+                     <div class="fw-semibold" id="d_sumber">-</div>
                   </div>
 
                   <div class="col-md-3">
