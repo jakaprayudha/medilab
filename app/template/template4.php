@@ -203,36 +203,89 @@ Result
    }
 
    /* ================= DRAW ================= */
-
-   function drawChart(canvasId, labels, data, title) {
+   function drawChart(canvasId, labels, data, title, maxX) {
 
       const c = document.getElementById(canvasId);
       const ctx = c.getContext("2d");
 
-      c.width = 180;
-      c.height = 70;
+      c.width = 200; // tambah lebar untuk label kiri
+      c.height = 80; // tambah tinggi untuk angka bawah
 
       const w = c.width;
       const h = c.height;
 
+      const leftPad = 25; // ruang label kiri
+      const bottomPad = 18; // ruang angka bawah
+
+      const baseY = h - bottomPad;
+
       ctx.clearRect(0, 0, w, h);
+
+
+      /* ================= AXIS ================= */
+
+      ctx.strokeStyle = "#000";
+      ctx.lineWidth = 1;
+
+      ctx.beginPath();
+      ctx.moveTo(leftPad, baseY);
+      ctx.lineTo(w - 5, baseY);
+      ctx.stroke();
+
+
+      /* ================= SCALE ANGKA ================= */
+
+      ctx.font = "9px monospace";
+      ctx.textAlign = "center";
+
+      const steps = 3;
+
+      for (let i = 0; i <= steps; i++) {
+
+         const value = (maxX / steps) * i;
+
+         const x = leftPad + ((w - leftPad - 5) / maxX) * value;
+
+         ctx.beginPath();
+         ctx.moveTo(x, baseY);
+         ctx.lineTo(x, baseY + 4);
+         ctx.stroke();
+
+         ctx.fillText(Math.round(value), x, baseY + 12); // sekarang di luar garis
+      }
+
+
+      /* ================= CURVE ================= */
 
       ctx.beginPath();
 
+      const maxVal = Math.max(...data);
+
       for (let i = 0; i < data.length; i++) {
 
-         let x = (i / data.length) * w;
-         let y = h - data[i] / Math.max(...data) * (h - 10);
+         let x = leftPad + (i / data.length) * (w - leftPad - 5);
+         let y = baseY - (data[i] / maxVal) * (h - bottomPad - 10);
 
          if (i === 0) ctx.moveTo(x, y);
          else ctx.lineTo(x, y);
       }
 
-      ctx.strokeStyle = "#000";
       ctx.stroke();
 
-      ctx.font = "10px monospace";
-      ctx.fillText(title, 5, 10);
+
+      /* ================= LABEL VERTICAL ================= */
+
+      ctx.save();
+
+      ctx.translate(15, h / 10);
+      ctx.rotate(-Math.PI / 2);
+
+      ctx.font = "bold 10px monospace";
+      ctx.textAlign = "center";
+
+      ctx.fillText(title, 0, 0);
+
+      ctx.restore();
    }
 
 
@@ -292,9 +345,9 @@ Result
 
    /* ================= RENDER ================= */
 
-   drawChart("wbc", wbcLabels, wbcData, "WBC");
-   drawChart("rbc", rbcLabels, rbcData, "RBC");
-   drawChart("plt", pltLabels, pltData, "PLT");
+   drawChart("wbc", wbcLabels, wbcData, "WBC", 350);
+   drawChart("rbc", rbcLabels, rbcData, "RBC", 200);
+   drawChart("plt", pltLabels, pltData, "PLT", 30);
 
 
    /* ================= PRINT ================= */
