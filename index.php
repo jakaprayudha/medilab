@@ -51,11 +51,11 @@
             </div>
             <div class="saprator my-3">
             </div>
-            <h4 class="text-center f-w-500 mb-3">Login with your email</h4>
+            <h4 class="text-center f-w-500 mb-3">Login with your username</h4>
             <div id="loginError" class="alert alert-danger d-none mt-3"></div>
             <form id="loginForm">
               <div class="form-group mb-3">
-                <input type="email" class="form-control" id="email" placeholder="Email Address">
+                <input type="text" class="form-control" id="email" placeholder="Username">
               </div>
               <div class="form-group mb-3">
                 <input type="password" class="form-control" id="password" placeholder="Password">
@@ -96,21 +96,28 @@
         email: $('#email').val(),
         password: $('#password').val()
       }, function(res) {
-
-        if (res.message !== "Login successful") {
-          $('#loginError').removeClass('d-none').text(res.message);
+        if (!res.success) {
+          showError(res.message);
           return;
         }
-
-        // redirect berdasarkan role
-        if (res.role === 'admin') {
-          window.location.href = "admin/index";
+        if (res.role === 'laboratorium') {
+          window.location.href = "app/index";
         } else {
-          window.location.href = "home";
+          window.location.href = "index";
         }
 
       }, 'json');
     });
+
+    function showError(msg) {
+      const el = $('#loginError');
+
+      el.removeClass('d-none').text(msg);
+
+      setTimeout(() => {
+        el.addClass('d-none').text('');
+      }, 1000);
+    }
   </script>
 </body>
 

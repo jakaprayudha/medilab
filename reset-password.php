@@ -52,10 +52,11 @@
             <div class="saprator my-3">
             </div>
             <h4 class="text-center f-w-500 mb-3">Reset Password</h4>
-            <div id="loginError" class="alert alert-danger d-none mt-3"></div>
+            <div id="toastMsg" class="alert d-none mt-3"></div>
+
             <form id="loginForm">
               <div class="form-group mb-3">
-                <input type="email" class="form-control" id="email" placeholder="Email Address">
+                <input type="text" class="form-control" id="email" placeholder="Username">
               </div>
               <div class="d-grid mt-4">
                 <button type="submit" class="btn btn-primary">Reset Password</button>
@@ -63,7 +64,7 @@
             </form>
             <div class="d-flex justify-content-between align-items-end mt-4">
               <h6 class="f-w-500 mb-0">Remember your password ?</h6>
-              <a href="register" class="link-primary">Login</a>
+              <a href="index" class="link-primary">Login</a>
             </div>
           </div>
         </div>
@@ -81,25 +82,38 @@
   <script src="assets/js/plugins/feather.min.js"></script>
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <script>
+    function showToast(msg, type = 'success') {
+      const el = $('#toastMsg');
+
+      el.removeClass('d-none alert-success alert-danger')
+        .addClass('alert-' + type)
+        .text(msg)
+        .hide()
+        .fadeIn(200);
+
+      setTimeout(() => {
+        el.fadeOut(400, function() {
+          $(this).addClass('d-none');
+        });
+      }, 5000);
+    }
+
     $('#loginForm').on('submit', function(e) {
       e.preventDefault();
 
-      $.post("api/login", {
-        email: $('#email').val(),
-        password: $('#password').val()
+      $.post("api/reset_password", {
+        email: $('#email').val()
       }, function(res) {
 
-        if (res.message !== "Login successful") {
-          $('#loginError').removeClass('d-none').text(res.message);
+        if (!res.success) {
+          showToast(res.message, 'danger');
           return;
         }
 
-        // redirect berdasarkan role
-        if (res.role === 'admin') {
-          window.location.href = "admin/index";
-        } else {
-          window.location.href = "home";
-        }
+        showToast(
+          "Password baru anda: " + res.new_password,
+          'success'
+        );
 
       }, 'json');
     });
