@@ -121,12 +121,24 @@ require "components/modal/modal.php";
          <div class="row">
             <div class="card">
                <div class="card-header d-flex justify-content-between align-items-center">
-                  <span>List of Perminaan</span>
-                  <button class="btn btn-primary btn-sm"
-                     data-bs-toggle="modal"
-                     data-bs-target="#modalRequestLab">
-                     <i class="bi bi-plus"></i> Tambah
-                  </button>
+
+                  <!-- Kiri -->
+                  <span class="fw-semibold">List of Permintaan</span>
+
+                  <!-- Kanan -->
+                  <div class="d-flex gap-2">
+                     <button class="btn btn-light btn-sm"
+                        onclick="window.history.back()">
+                        <i class="bi bi-arrow-left"></i> Kembali
+                     </button>
+
+                     <button class="btn btn-primary btn-sm"
+                        data-bs-toggle="modal"
+                        data-bs-target="#modalRequestLab">
+                        <i class="bi bi-plus"></i> Tambah
+                     </button>
+                  </div>
+
                </div>
                <div class="card-body">
                   <div class="table-responsive">
