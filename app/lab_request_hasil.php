@@ -153,6 +153,7 @@
                            <tr>
                               <th>No</th>
                               <th>Parameter</th>
+                              <th>LIS</th>
                               <th class="col-2">Satuan</th>
                               <th>Minimum</th>
                               <th class="col-1">Maksimum</th>

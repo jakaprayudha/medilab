@@ -30,6 +30,7 @@ const tablePermintaan = $("#PermintaanTable").DataTable({
   columns: [
     { data: null },
     { data: "assemen" },
+    { data: "ass_alat" },
     { data: "satuan" },
     { data: "minimum" },
     { data: "maksimum" },
@@ -41,7 +42,7 @@ const tablePermintaan = $("#PermintaanTable").DataTable({
       render: (d, t, r, m) => m.row + 1,
     },
     {
-      targets: 5,
+      targets: 6,
       render: function (data, type, row) {
         return `
         <input type="text"
