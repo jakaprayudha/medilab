@@ -17,10 +17,10 @@
                   </div>
                   <div class="flex-grow-1 ms-3 me-2">
                      <h6 class="mb-0">
-                        <?= htmlspecialchars($_SESSION['user']['fullname'] ?? 'Guest') ?>
+                        <?= htmlspecialchars($_SESSION['fullname'] ?? 'Guest') ?>
                      </h6>
                      <small>
-                        <?= ucfirst($_SESSION['user']['role'] ?? 'User') ?>
+                        <?= ucfirst($_SESSION['roles'] ?? 'User') ?>
                      </small>
                   </div>
                   <a class="btn btn-icon btn-link-secondary avtar" data-bs-toggle="collapse" href="#pc_sidebar_userlink">

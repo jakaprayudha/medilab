@@ -170,9 +170,9 @@
                                 <img src="../assets/images/user/avatar-2.jpg" alt="user-image" class="user-avtar wid-35" />
                              </div>
                              <div class="flex-grow-1 ms-3">
-                                <h6 class="mb-1"> <?= htmlspecialchars($_SESSION['user']['fullname'] ?? 'Guest') ?> 🖖</h6>
+                                <h6 class="mb-1"> <?= htmlspecialchars($_SESSION['fullname'] ?? 'Guest') ?> 🖖</h6>
                                 <span>
-                                   <?= htmlspecialchars($_SESSION['user']['email'] ?? '-') ?>
+                                   <?= htmlspecialchars($_SESSION['roles'] ?? '-') ?>
                                 </span>
                              </div>
                           </div>
@@ -262,16 +262,32 @@
      });
   </script>
   <script>
-document.addEventListener("DOMContentLoaded", function () {
-  const mobileBtn = document.getElementById("mobile-collapse");
-  const sidebar = document.querySelector(".pc-sidebar");
+     document.addEventListener("DOMContentLoaded", function() {
+        const mobileBtn = document.getElementById("mobile-collapse");
+        const sidebar = document.querySelector(".pc-sidebar");
 
-  if (!mobileBtn || !sidebar) return;
+        if (!mobileBtn || !sidebar) return;
 
-  mobileBtn.addEventListener("click", function (e) {
-    e.preventDefault();
-    sidebar.classList.toggle("active");
-  });
-});
+        mobileBtn.addEventListener("click", function(e) {
+           e.preventDefault();
+           sidebar.classList.toggle("active");
+        });
+     });
+  </script>
 
-</script>
+  <script>
+     $("#btnLogout").on("click", function() {
+
+        $.post("../api/logout", {}, function(res) {
+
+              if (res.success) {
+                 window.location.href = "../";
+              }
+
+           }, "json")
+           .fail(function() {
+              alert("Gagal logout");
+           });
+
+     });
+  </script>

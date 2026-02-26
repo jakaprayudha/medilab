@@ -69,6 +69,7 @@ mysqli_query($conn, "
 $_SESSION['user_id'] = $user['id'];
 $_SESSION['fullname'] = $user['fullname'];
 $_SESSION['roles'] = $user['roles'];
+$_SESSION['username'] = $user['username'];
 $_SESSION['token'] = $token;
 
 /* ================= RESPONSE ================= */
