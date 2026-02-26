@@ -1,0 +1,54 @@
+@page {
+  size: A4;
+  margin: 10mm;
+}
+
+body {
+  font-family: "Courier New", monospace;
+  font-size: 14px;
+  color: #000;
+}
+
+.report {
+  width: 100%;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.col {
+  width: 48%;
+}
+
+pre {
+  margin: 0;
+  white-space: pre;
+}
+
+/* garis pemisah seperti alat */
+.separator {
+  border-top: 1px solid #000;
+  margin: 10px 0;
+}
+
+/* grafik */
+.graph-row {
+  display: flex;
+  justify-content: center;
+  gap: 20px; /* 🔥 jarak antar grafik */
+  margin-top: 30px;
+}
+
+canvas {
+  width: 260px;
+  height: 140px;
+  border-left: 1px solid #000;
+  border-bottom: 1px solid #000;
+}
+
+.title {
+  font-weight: bold;
+  margin-bottom: 5px;
+}

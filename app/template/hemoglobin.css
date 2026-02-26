@@ -1,0 +1,69 @@
+@page {
+  margin: 0;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background: white;
+}
+
+.receipt {
+  width: 58mm;
+  padding: 4mm;
+  font-family: "Courier New", monospace;
+  font-size: 13px;
+  line-height: 1.2;
+  color: #000;
+  font-weight: 500;
+}
+
+.center {
+  text-align: center;
+}
+
+.logo {
+  margin-bottom: 4px;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.dash {
+  border-top: 1px dashed #000;
+  margin: 6px 0;
+}
+
+.big {
+  font-size: 36px;
+  font-weight: bold;
+  text-align: center;
+  margin: 6px 0;
+}
+
+.small {
+  font-size: 11px;
+}
+
+.indent {
+  padding-left: 18px;
+}
+.ada {
+  font-size: 7px;
+  line-height: 1.2;
+  margin-top: 4px;
+}
+
+.ada-title {
+  text-align: center;
+  margin-bottom: 1px;
+}
+
+.grid {
+  font-size: 10px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px 3px;
+}

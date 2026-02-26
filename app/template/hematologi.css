@@ -1,0 +1,100 @@
+@page {
+  margin: 0;
+  size: auto;
+}
+
+body {
+  margin: 0;
+  background: white;
+  font-family: "Courier New", monospace;
+}
+
+/* ================= PAPER ================= */
+
+.paper {
+  padding: 2mm;
+  font-size: 9px;
+  line-height: 1.5;
+  width: fit-content; /* penting supaya alignment presisi */
+}
+
+/* ================= HEADER ================= */
+
+.header {
+  font-size: 12px;
+  font-weight: 900;
+  text-align: center;
+  margin-bottom: 2px;
+}
+
+/* ================= INFO ================= */
+
+.info {
+  font-size: 9px;
+  margin-bottom: 2px;
+
+  display: grid;
+  grid-template-columns: auto auto auto auto auto auto 70px;
+  column-gap: 4px;
+}
+
+/* baris time */
+.info-line {
+  grid-column: 1 / span 6;
+  display: flex;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+/* baris name */
+.info-name {
+  grid-column: 1 / span 6;
+}
+
+/* ================= MAIN TABLE ================= */
+
+.row {
+  display: grid;
+  grid-template-columns: auto auto auto auto auto auto 70px;
+  column-gap: 4px;
+  align-items: start;
+}
+
+/* TEXT COLUMN */
+
+.block {
+  min-width: 55px;
+}
+
+/* TEXT FORMAT */
+
+pre {
+  margin: 0;
+  white-space: pre;
+  font-size: 9px;
+  line-height: 1.25;
+}
+
+/* ================= HISTOGRAM ================= */
+
+.small-chart {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  width: 70px;
+}
+
+/* CANVAS SIZE */
+
+canvas {
+  width: 70px;
+  height: 35px;
+  border-left: 1px solid #000;
+  border-bottom: 1px solid #000;
+}
+
+/* SMALL TEXT */
+
+.small {
+  font-size: 8px;
+}

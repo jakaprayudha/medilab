@@ -1,0 +1,17 @@
+@page {
+  margin: 0;
+}
+
+body {
+  margin: 0;
+  background: white;
+}
+
+.struk {
+  width: 58mm;
+  padding: 5mm;
+  font-family: "Courier New", monospace;
+  font-size: 14px;
+  line-height: 1.1;
+  font-weight: 600;
+}

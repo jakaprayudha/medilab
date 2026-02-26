@@ -187,9 +187,8 @@ $("#btnPrint").on("click", function () {
   const rm = getParam("rm");
   const lab = getParam("lab");
 
-  const url = `lab_request_print?visit=${encodeURIComponent(visit)}&no=${encodeURIComponent(no)}&rm=${encodeURIComponent(rm)}&lab=${encodeURIComponent(lab)}`;
-  // window.open(url, "_blank");
-  window.location.href = url;
+  const url = `../api/lab_request_print?visit=${encodeURIComponent(visit)}&no=${encodeURIComponent(no)}&rm=${encodeURIComponent(rm)}&lab=${encodeURIComponent(lab)}`;
+  window.open(url, "_blank");
 });
 
 //HISTOGRAM
