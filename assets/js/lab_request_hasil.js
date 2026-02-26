@@ -180,3 +180,138 @@ $("#btnGetAlat").on("click", function () {
     tablePermintaan.ajax.reload(null, false);
   }, 2000);
 });
+
+$("#btnPrint").on("click", function () {
+  const visit = getParam("visit");
+  const no = getParam("no");
+  const rm = getParam("rm");
+  const lab = getParam("lab");
+
+  const url = `lab_request_print?visit=${encodeURIComponent(visit)}&no=${encodeURIComponent(no)}&rm=${encodeURIComponent(rm)}&lab=${encodeURIComponent(lab)}`;
+  // window.open(url, "_blank");
+  window.location.href = url;
+});
+
+//HISTOGRAM
+let wbcChart, rbcChart, pltChart;
+
+$("#btnHistogram").on("click", function () {
+  const modal = new bootstrap.Modal(document.getElementById("modalHistogram"));
+
+  modal.show();
+
+  loadHistogramData();
+});
+function gaussian(x, mean, sd, height) {
+  return height * Math.exp(-0.5 * Math.pow((x - mean) / sd, 2));
+}
+function loadHistogramData() {
+  $.get(
+    "../api/lab_histogram",
+    {
+      no: nopermintaan,
+      lab: lab,
+    },
+    function (res) {
+      if (!res.success) {
+        showToast("Data histogram tidak ditemukan", "danger");
+        return;
+      }
+
+      const d = res.data;
+
+      /* ================= WBC ================= */
+
+      const lymph = Number(d["lymph"] ?? 30);
+      const mid = Number(d["mid"] ?? 10);
+      const gran = Number(d["gran"] ?? 60);
+
+      const wbcLabels = Array.from({ length: 40 }, (_, i) => i * 10 + 50);
+
+      const wbcData = wbcLabels.map(
+        (x) =>
+          gaussian(x, 90, 15, lymph) +
+          gaussian(x, 150, 20, mid) +
+          gaussian(x, 300, 40, gran),
+      );
+
+      /* ================= RBC ================= */
+
+      const mcv = Number(d["mcv"] ?? 90);
+      const rdw = Number(d["rdw"] ?? 13);
+
+      const rbcLabels = Array.from({ length: 40 }, (_, i) => i * 5 + 60);
+
+      const rbcData = rbcLabels.map((x) => gaussian(x, mcv, rdw, 100));
+
+      /* ================= PLT ================= */
+
+      const mpv = Number(d["mpv"] ?? 10);
+      const pdw = Number(d["pdw"] ?? 12);
+
+      const pltLabels = Array.from({ length: 40 }, (_, i) => i * 2 + 2);
+
+      const pltData = pltLabels.map((x) => gaussian(x, mpv, pdw / 2, 120));
+
+      renderCharts(wbcLabels, wbcData, rbcLabels, rbcData, pltLabels, pltData);
+    },
+    "json",
+  );
+}
+function renderCharts(
+  wbcLabels,
+  wbcData,
+  rbcLabels,
+  rbcData,
+  pltLabels,
+  pltData,
+) {
+  if (wbcChart) wbcChart.destroy();
+  if (rbcChart) rbcChart.destroy();
+  if (pltChart) pltChart.destroy();
+
+  wbcChart = new Chart(document.getElementById("wbcChart"), {
+    type: "line",
+    data: {
+      labels: wbcLabels,
+      datasets: [
+        {
+          label: "WBC",
+          data: wbcData,
+          borderColor: "green",
+          tension: 0.3,
+        },
+      ],
+    },
+  });
+
+  rbcChart = new Chart(document.getElementById("rbcChart"), {
+    type: "line",
+    data: {
+      labels: rbcLabels,
+      datasets: [
+        {
+          label: "RBC",
+          data: rbcData,
+          borderColor: "red",
+          tension: 0.3,
+        },
+      ],
+    },
+  });
+
+  pltChart = new Chart(document.getElementById("pltChart"), {
+    type: "line",
+    data: {
+      labels: pltLabels,
+      datasets: [
+        {
+          label: "PLT",
+          data: pltData,
+          borderColor: "blue",
+          tension: 0.3,
+        },
+      ],
+    },
+  });
+}

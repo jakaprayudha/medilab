@@ -132,6 +132,14 @@
                         <i class="bi bi-arrow-left"></i> Kembali
                      </button>
 
+                     <button id="btnHistogram" class="btn btn-outline-success btn-sm">
+                        <i class="bi bi-bar-chart"></i> Histogram
+                     </button>
+
+                     <button id="btnPrint" class="btn btn-outline-warning btn-sm">
+                        <i class="bi bi-printer"></i> Print Out
+                     </button>
+
                      <button id="btnGetAlat" class="btn btn-primary btn-sm">
                         <i class="bi bi-download"></i> Get Data Alat
                      </button>
@@ -161,7 +169,67 @@
    <!-- [ Main Content ] end -->
    <?php require 'partial/footer.php' ?>
    <?php require 'partial/library.php' ?>
+   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+   <div class="modal fade" id="modalHistogram" tabindex="-1">
+      <div class="modal-dialog modal-xl modal-dialog-centered">
+         <div class="modal-content">
 
+            <div class="modal-header bg-success text-white">
+               <h5 class="modal-title">
+                  <i class="bi bi-bar-chart"></i> Histogram Pemeriksaan
+               </h5>
+               <button type="button" class="btn-close btn-close-white"
+                  data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+
+               <div class="row g-3">
+
+                  <!-- WBC -->
+                  <div class="col-md-4">
+                     <div class="border rounded p-2 h-100">
+                        <h6 class="text-center mb-2">
+                           <span class="badge bg-success">WBC</span>
+                        </h6>
+                        <canvas id="wbcChart" height="160"></canvas>
+                     </div>
+                  </div>
+
+                  <!-- RBC -->
+                  <div class="col-md-4">
+                     <div class="border rounded p-2 h-100">
+                        <h6 class="text-center mb-2">
+                           <span class="badge bg-danger">RBC</span>
+                        </h6>
+                        <canvas id="rbcChart" height="160"></canvas>
+                     </div>
+                  </div>
+
+                  <!-- PLT -->
+                  <div class="col-md-4">
+                     <div class="border rounded p-2 h-100">
+                        <h6 class="text-center mb-2">
+                           <span class="badge bg-primary">PLT</span>
+                        </h6>
+                        <canvas id="pltChart" height="160"></canvas>
+                     </div>
+                  </div>
+
+               </div>
+
+            </div>
+
+            <div class="modal-footer">
+               <button class="btn btn-secondary"
+                  data-bs-dismiss="modal">
+                  Tutup
+               </button>
+            </div>
+
+         </div>
+      </div>
+   </div>
    <div id="loadingAlat" class="loading-overlay d-none">
       <div class="text-center text-white">
          <div class="spinner-border mb-3" role="status"></div>
