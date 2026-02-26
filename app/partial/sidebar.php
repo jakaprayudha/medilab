@@ -84,7 +84,7 @@
                </ul>
             </li>
             <li class="pc-item">
-               <a href="exposure" class="pc-link"><span class="pc-micon">
+               <a href="lab_request" class="pc-link"><span class="pc-micon">
                      <svg class="pc-icon">
                         <use xlink:href="#custom-user"></use>
                      </svg> </span><span class="pc-mtext">Permintaan Laboratorium</span></a>
@@ -161,6 +161,9 @@
          master_print_lab: [
             "master_print_lab",
          ],
+         permintaan_lab: [
+            "permintaan_lab",
+         ]
       };
 
 

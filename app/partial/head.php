@@ -27,6 +27,7 @@
    <link rel="stylesheet" href="../assets/css/style-preset.css">
    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css">
    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+   <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
    <style>
       @media (max-width: 991px) {
          .pc-sidebar {
@@ -65,6 +66,21 @@
       table td {
          white-space: normal;
          word-break: break-word;
+      }
+
+      .select2-container {
+         width: 100% !important;
+      }
+
+      .select2-container--bootstrap-5 .select2-selection {
+         height: 38px;
+         padding: 4px 10px;
+      }
+
+      .select2-container .select2-selection--single {
+         height: 38px;
+         padding: 6px 12px;
+         border: 1px solid #ced4da;
       }
    </style>
 </head>
