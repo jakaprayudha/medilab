@@ -2,13 +2,7 @@
 <html lang="en">
 <!-- [Head] start -->
 <?php require 'partial/head.php'; ?>
-<?php
-$modalId = "modalRequestLab";
-$title   = "Tambah Pemeriksaan Lab";
-$content = "forms/lab_request_test.php"; // isi field Master Lab
-$submitId = "btnSavePermintaanLab";
-require "components/modal/modal.php";
-?>
+
 <!-- [Head] end -->
 <!-- [Body] Start -->
 
@@ -35,12 +29,15 @@ require "components/modal/modal.php";
                      <ul class="breadcrumb">
                         <li class="breadcrumb-item"><a href="index">Home</a></li>
                         <li class="breadcrumb-item"><a href="lab_request">Permintaan Laboratorium</a></li>
-                        <li class="breadcrumb-item" aria-current="page">Pemeriksaan</li>
+                        <li class="breadcrumb-item">
+                           <a href="javascript:history.back()">Pemeriksaan</a>
+                        </li>
+                        <li class="breadcrumb-item" aria-current="page">Pengisian Hasil</li>
                      </ul>
                   </div>
                   <div class="col-md-12">
                      <div class="page-header-title">
-                        <h2 class="mb-0">Pemeriksaan</h2>
+                        <h2 class="mb-0">Permintaan</h2>
                      </div>
                   </div>
                </div>
@@ -108,9 +105,11 @@ require "components/modal/modal.php";
                   </div>
 
                   <div class="col-md-3">
-                     <label class="text-muted small">Total Pemeriksaan</label>
+                     <label class="text-muted small">Pemeriksaan</label>
                      <div class="fw-semibold">
-                        <span class="badge bg-info fs-6" id="d_total_item">0</span>
+                        <span class="badge bg-danger fs-6" id="">
+                           <?php echo $_GET['lab'] ?>
+                        </span>
                      </div>
                   </div>
 
@@ -133,10 +132,8 @@ require "components/modal/modal.php";
                         <i class="bi bi-arrow-left"></i> Kembali
                      </button>
 
-                     <button class="btn btn-primary btn-sm"
-                        data-bs-toggle="modal"
-                        data-bs-target="#modalRequestLab">
-                        <i class="bi bi-plus"></i> Tambah
+                     <button id="btnGetAlat" class="btn btn-primary btn-sm">
+                        <i class="bi bi-download"></i> Get Data Alat
                      </button>
                   </div>
 
@@ -147,11 +144,11 @@ require "components/modal/modal.php";
                         <thead>
                            <tr>
                               <th>No</th>
-                              <th>Pemeriksaan Lab</th>
-                              <th>Catatan</th>
-                              <th>File</th>
-                              <th>Status</th>
-                              <th class="text-center col-2">Actions</th>
+                              <th>Parameter</th>
+                              <th class="col-2">Satuan</th>
+                              <th>Minimum</th>
+                              <th class="col-1">Maksimum</th>
+                              <th class="col-2">Hasil</th>
                            </tr>
                         </thead>
                      </table>
@@ -164,8 +161,15 @@ require "components/modal/modal.php";
    <!-- [ Main Content ] end -->
    <?php require 'partial/footer.php' ?>
    <?php require 'partial/library.php' ?>
+
+   <div id="loadingAlat" class="loading-overlay d-none">
+      <div class="text-center text-white">
+         <div class="spinner-border mb-3" role="status"></div>
+         <div>Mengambil data dari alat...</div>
+      </div>
+   </div>
 </body>
 <!-- [Body] end -->
-<script src="../assets/js/lab_request_detail.js"></script>
+<script src="../assets/js/lab_request_hasil.js"></script>
 
 </html>

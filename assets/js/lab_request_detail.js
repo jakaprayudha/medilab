@@ -64,7 +64,7 @@ const tablePermintaan = $("#PermintaanTable").DataTable({
       render: function (id, type, row) {
         return `
           <button class="btn btn-info btn-sm btn-detail action-btn"
-                  data-id="${id}" data-nopermintaan="${row.nopermintaan}" data-nomor_rm="${row.nomor_rm}" data-nomor_visit="${row.catatan}">
+                  data-id="${id}" data-nopermintaan="${row.nopermintaan}" data-nomor_rm="${row.nomor_rm}" data-nomor_visit="${nomor_visit}" data-lab="${row.lab}">
             <i class="bi bi-plus"></i> Hasil
           </button>
           <button class="btn btn-danger btn-sm btn-delete action-btn"
@@ -161,8 +161,9 @@ $("#PermintaanTable").on("click", ".btn-detail", function () {
   const nopermintaan = $(this).data("nopermintaan");
   const nomor_rm = $(this).data("nomor_rm");
   const nomor_visit = $(this).data("nomor_visit");
+  const lab = $(this).data("lab");
   // redirect ke halaman parameter
-  window.location.href = `lab_request_detail?visit=${nomor_visit}&no=${nopermintaan}&rm=${nomor_rm}`;
+  window.location.href = `lab_request_hasil?visit=${nomor_visit}&no=${nopermintaan}&rm=${nomor_rm}&lab=${lab}`;
 });
 
 // ==========================================================
