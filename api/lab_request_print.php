@@ -87,6 +87,10 @@ switch ($template) {
       require "../app/template/template5.php";
       break;
 
+   case 6:
+      require "../app/template/template6.php";
+      break;
+
    default:
       require "../app/template/template0.php";
       break;

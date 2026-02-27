@@ -38,6 +38,7 @@ const tableLab = $("#LabTable").DataTable({
         const t3 = tpl == 3 ? "selected" : "";
         const t4 = tpl == 4 ? "selected" : "";
         const t5 = tpl == 5 ? "selected" : "";
+        const t6 = tpl == 6 ? "selected" : "";
 
         return `
           <select class="form-select form-select-sm template-select"
@@ -50,6 +51,7 @@ const tableLab = $("#LabTable").DataTable({
             <option value="3" ${t3}>Template 3</option>
             <option value="4" ${t4}>Template 4</option>
             <option value="5" ${t5}>Template 5</option>
+            <option value="6" ${t6}>Template 6</option>
 
           </select>
         `;
@@ -89,7 +91,7 @@ $("#LabTable").on("click", ".btn-edit", function () {
 
     success: function (res) {
       // template list termasuk default
-      let templates = [0, 1, 2, 3, 4, 5];
+      let templates = [0, 1, 2, 3, 4, 5, 6];
 
       let imagesHtml = templates
         .map((num) => {
