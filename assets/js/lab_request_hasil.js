@@ -222,15 +222,21 @@ function loadHistogramData() {
 
       /* ================= WBC ================= */
 
-      const lymph = Number(d["limfosit"] ?? 30);
+      // const lymph = Number(d["limfosit"] ?? 30);
 
-      const mid =
-        Number(d["monosit"] ?? 0) +
-        Number(d["eosinofil"] ?? 0) +
-        Number(d["basofil"] ?? 0);
+      const lymph = Number(d["lymph%"] ?? 30);
 
-      const gran =
-        Number(d["neutrofil segmen"] ?? 0) + Number(d["neutrofil batang"] ?? 0);
+      // const mid =
+      //   Number(d["monosit"] ?? 0) +
+      //   Number(d["eosinofil"] ?? 0) +
+      //   Number(d["basofil"] ?? 0);
+
+      const mid = Number(d["%mid"] ?? 0);
+
+      // const gran =
+      //   Number(d["neutrofil segmen"] ?? 0) + Number(d["neutrofil batang"] ?? 0);
+
+      const gran = Number(d["gran%"] ?? 0);
 
       const wbcTotal = Number(d["leukosit"] ?? 8000);
       const wbcLabels = Array.from({ length: 40 }, (_, i) => i * 10 + 50);
