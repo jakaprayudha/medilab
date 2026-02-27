@@ -48,8 +48,12 @@ $datalab = mysqli_fetch_assoc($datahasil);
   </div>
 
   <script>
-    // Auto print (optional)
-    // window.print();
+    window.onload = () => {
+      setTimeout(() => {
+        window.print();
+        window.close();
+      }, 500);
+    };
   </script>
 
 </body>
