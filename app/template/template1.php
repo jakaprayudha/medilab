@@ -80,7 +80,7 @@
     <div class="dash"></div>
 
     <!-- ADA Target -->
-    <div class="small center">[ ADA : <b><?= $status ?></b> ]</div>
+    <div class="small center">[ ADA Target for patients with <?= $status ?> ]</div>
 
     <div class="grid">
       <div>IFCC : 53 mmol/mol</div>
