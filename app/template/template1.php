@@ -28,10 +28,9 @@
   {
     if (!is_numeric($hba1c)) return '-';
 
-    if ($hba1c < 5.7) return "Normal";
-    if ($hba1c < 6.5) return "Prediabetes";
-    if ($hba1c < 7) return "Diabetes Terkontrol";
-    return "Diabetes Tidak Terkontrol";
+    if ($hba1c < 5.6) return "Normal"; //Normal
+    if ($hba1c < 6.4) return "Prediabetes"; //Prediabetes
+    if ($hba1c > 6.5) return "Diabetes"; //Diabetes Terkontrol
   }
   $status = statusDiabetes($hba1c);
   ?>
@@ -81,7 +80,7 @@
     <div class="dash"></div>
 
     <!-- ADA Target -->
-    <div class="small center">[ Status : <b><?= $status ?></b> ]</div>
+    <div class="small center">[ ADA : <b><?= $status ?></b> ]</div>
 
     <div class="grid">
       <div>IFCC : 53 mmol/mol</div>
