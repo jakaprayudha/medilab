@@ -22,7 +22,7 @@ if ($method === "GET" && !isset($_GET["id"])) {
       INNER JOIN pasien_visit pv 
          ON pv.nomor_visit = d.catatan
 
-      WHERE d.status = 0
+      -- WHERE d.status = 0
 
       GROUP BY d.nopermintaan
       ORDER BY d.tanggal DESC";
