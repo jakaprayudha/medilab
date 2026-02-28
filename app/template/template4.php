@@ -103,7 +103,7 @@ $f = flag($wbc, 5.0, 11.0);
 ?>
 <?= $f ?> <?= $wbc ?> x 10^9/L
 <?= $hist['lymph#'] ?? $hist['limfosit'] ?? $hist['#lymphocytes'] ?? '-' ?> x 10^9/L
-<?= $hist['mid#'] ?? $hist['monosit'] ?? '-' ?> x 10^9/L
+<?= $hist['mid#'] ?? $hist['monosit'] ?? $hist['#monocytes'] ?? '-' ?> x 10^9/L
 <?= $hist['gran#'] ?? $hist['#granulocytes'] ?? '-' ?> x 10^9/L
 <?= $hist['lymph%'] ?? $hist['%lymphocytes'] ?? '-' ?> %
 <?= $hasil['mid%'] ?? $hist['%monocytes'] ?? '-' ?> %
@@ -294,16 +294,21 @@ Result
 
    /* ================= WBC ================= */
 
-   const lymph = Number(d["limfosit"] ?? 30);
-
-   const mid =
-      Number(d["monosit"] ?? 0) +
+   const lymph = Number(d["limfosit"] ?? d["%Lymphocytes"] ?? 30);
+   const mid = Number(
+      d["%mid"] ??
+      Number(d["monosit"] ?? d["%Monocytes"] ?? 0) +
       Number(d["eosinofil"] ?? 0) +
-      Number(d["basofil"] ?? 0);
+      Number(d["basofil"] ?? 0),
+   );
 
-   const gran =
+   const gran = Number(
+      d["gran%"] ??
+      d["%Granulocyte"] ??
       Number(d["neutrofil segmen"] ?? 0) +
-      Number(d["neutrofil batang"] ?? 0);
+      Number(d["neutrofil batang"] ?? 0),
+   );
+
 
    const wbcTotal = Number(d["leukosit"] ?? 8000);
 
