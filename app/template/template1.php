@@ -74,13 +74,20 @@
 
     <!-- Result -->
     <div>HbA1c = <?= $hba1c ?> %[NGSP]</div>
-    <div class="indent"><?= $eag ?> mg/dL[eAG]</div>
+    <?php
+    $eAG = null;
+
+    if (is_numeric($hba1c)) {
+      $eAG = (28.7 * $hba1c) - 46.7;
+    }
+    ?>
+    <div class="indent"><?= $eAG ?> mg/dL[eAG]</div>
     <div>Procedural Control = Valid</div>
 
     <div class="dash"></div>
 
     <!-- ADA Target -->
-    <div class="small center">[ ADA Target for patients with <?= $status ?> ]</div>
+    <div class="small center">[ ADA Target for patients with Diabetes]</div>
 
     <div class="grid">
       <div>IFCC : 53 mmol/mol</div>

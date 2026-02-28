@@ -223,19 +223,25 @@ function loadHistogramData() {
       /* ================= WBC ================= */
 
       const lymph = Number(d["limfosit"] ?? d["%ymphocytes"] ?? 30);
-      const mid = Number(
-        d["%mid"] ??
-          Number(d["monosit"] ?? d["%monocytes"] ?? 0) +
-            Number(d["eosinofil"] ?? 0) +
-            Number(d["basofil"] ?? 0),
-      );
+      // Alat 5 DIVV
+      // const mid = Number(
+      //   d["%mid"] ??
+      //     Number(d["monosit"] ?? d["%monocytes"] ?? 0) +
+      //       Number(d["eosinofil"] ?? 0) +
+      //       Number(d["basofil"] ?? 0),
+      // );
 
-      const gran = Number(
-        d["gran%"] ??
-          d["%Granulocyte"] ??
-          Number(d["neutrofil segmen"] ?? 0) +
-            Number(d["neutrofil batang"] ?? 0),
-      );
+      // Alat 3 DIVV
+      const mid = Number(d["monosit"] ?? d["%monocytes"] ?? 0);
+      // Alat 5 DIVV
+      // const gran = Number(
+      //   d["gran%"] ??
+      //     d["%Granulocyte"] ??
+      //     Number(d["neutrofil segmen"] ?? 0) +
+      //       Number(d["neutrofil batang"] ?? 0),
+      // );
+      // Alat 3 DIVV
+      const gran = Number(d["gran%"] ?? d["%granulocyte"] ?? 0);
 
       function normalizeCount(val) {
         val = Number(val || 0);
