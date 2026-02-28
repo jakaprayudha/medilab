@@ -222,16 +222,17 @@ function loadHistogramData() {
 
       /* ================= WBC ================= */
 
-      const lymph = Number(d["limfosit"] ?? d["lymph%"] ?? 30);
+      const lymph = Number(d["limfosit"] ?? d["%Lymphocytes"] ?? 30);
       const mid = Number(
         d["%mid"] ??
-          Number(d["monosit"] ?? 0) +
+          Number(d["monosit"] ?? d["%Monocytes"] ?? 0) +
             Number(d["eosinofil"] ?? 0) +
             Number(d["basofil"] ?? 0),
       );
 
       const gran = Number(
         d["gran%"] ??
+          d["%Granulocyte"] ??
           Number(d["neutrofil segmen"] ?? 0) +
             Number(d["neutrofil batang"] ?? 0),
       );
