@@ -222,10 +222,10 @@ function loadHistogramData() {
 
       /* ================= WBC ================= */
 
-      const lymph = Number(d["limfosit"] ?? d["%Lymphocytes"] ?? 30);
+      const lymph = Number(d["limfosit"] ?? d["%ymphocytes"] ?? 30);
       const mid = Number(
         d["%mid"] ??
-          Number(d["monosit"] ?? d["%Monocytes"] ?? 0) +
+          Number(d["monosit"] ?? d["%monocytes"] ?? 0) +
             Number(d["eosinofil"] ?? 0) +
             Number(d["basofil"] ?? 0),
       );
@@ -237,7 +237,14 @@ function loadHistogramData() {
             Number(d["neutrofil batang"] ?? 0),
       );
 
-      const wbcTotal = Number(d["leukosit"] ?? 8000);
+      function normalizeCount(val) {
+        val = Number(val || 0);
+        if (val < 50) return val * 1000;
+        return val;
+      }
+
+      const wbcTotal = normalizeCount(d["leukosit"]);
+
       const wbcLabels = Array.from({ length: 40 }, (_, i) => i * 10 + 50);
       const wbcData = wbcLabels.map(
         (x) =>

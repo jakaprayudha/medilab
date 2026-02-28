@@ -294,10 +294,10 @@ Result
 
    /* ================= WBC ================= */
 
-   const lymph = Number(d["limfosit"] ?? d["%Lymphocytes"] ?? 30);
+   const lymph = Number(d["limfosit"] ?? d["%lymphocytes"] ?? 30);
    const mid = Number(
       d["%mid"] ??
-      Number(d["monosit"] ?? d["%Monocytes"] ?? 0) +
+      Number(d["monosit"] ?? d["%monocytes"] ?? 0) +
       Number(d["eosinofil"] ?? 0) +
       Number(d["basofil"] ?? 0),
    );
