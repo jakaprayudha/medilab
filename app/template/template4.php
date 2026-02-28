@@ -22,6 +22,9 @@ $qHist = mysqli_query($conn, "
 while ($r = mysqli_fetch_assoc($qHist)) {
    $hist[strtolower($r['parameter'])] = $r['hasil'];
 }
+// echo "<pre>";
+// print_r($hist);
+// echo "</pre>";
 
 ?>
 <!doctype html>
@@ -99,14 +102,14 @@ $wbc = $hasil['wbc'] ?? 0;
 $f = flag($wbc, 5.0, 11.0);
 ?>
 <?= $f ?> <?= $wbc ?> x 10^9/L
-<?= $hasil['lymph#'] ?? '-' ?> x 10^9/L
-<?= $hasil['mid#'] ?? '-' ?> x 10^9/L
-<?= $hasil['gran#'] ?? '-' ?> x 10^9/L
-<?= $hasil['lymph%'] ?? '-' ?> %
-<?= $hasil['mid%'] ?? '-' ?> %
-<?= $hasil['gran%'] ?? '-' ?> %
-<?= $hasil['rbc'] ?? '-' ?> x 10^12/L
-<?= $hasil['hgb'] ?? '-' ?> g/dL
+<?= $hist['lymph#'] ?? $hist['limfosit'] ?? $hist['#lymphocytes'] ?? '-' ?> x 10^9/L
+<?= $hist['mid#'] ?? $hist['monosit'] ?? '-' ?> x 10^9/L
+<?= $hist['gran#'] ?? $hist['#granulocytes'] ?? '-' ?> x 10^9/L
+<?= $hist['lymph%'] ?? $hist['%lymphocytes'] ?? '-' ?> %
+<?= $hasil['mid%'] ?? $hist['%monocytes'] ?? '-' ?> %
+<?= $hasil['gran%'] ?? $hist['%granulocyte'] ?? '-' ?> %
+<?= $hasil['rbc'] ?? $hist['eritrosit'] ?? '-' ?> x 10^12/L
+<?= $hasil['hgb'] ?? $hist['hemoglobin'] ?? '-' ?> g/dL
 <?= $hasil['hct'] ?? '-' ?> %
 </pre>
          </div>
@@ -153,9 +156,9 @@ Result
 <?= $hasil['mcv'] ?? '-' ?> fL
 <?= $hasil['mch'] ?? '-' ?> pg
 <?= $hasil['mchc'] ?? '-' ?> g/dL
-<?= $hasil['rdw-cv'] ?? '-' ?> %
+<?= $hasil['rdw-cv'] ?? $hist['rdw'] ?? '-' ?> %
 <?= $hasil['rdw-sd'] ?? '-' ?> fL
-<?= $hasil['plt'] ?? '-' ?> x 10^9/L
+<?= $hasil['plt'] ?? $hist['trombosit'] ?? '-' ?> x 10^9/L
 <?= $hasil['mpv'] ?? '-' ?> fL
 <?= $hasil['pdw'] ?? '-' ?>
 <?= $hasil['pct'] ?? '-' ?> %
