@@ -196,6 +196,7 @@ Result
 <script>
    /* ================= DATA DARI PHP ================= */
 
+   /* pakai data parameter asli */
    const d = <?= json_encode($hist ?? []); ?>;
 
    /* ================= GAUSSIAN ================= */
@@ -205,26 +206,26 @@ Result
    }
 
    /* ================= DRAW ================= */
-
    function drawChart(canvasId, labels, data, title, maxX) {
 
       const c = document.getElementById(canvasId);
       const ctx = c.getContext("2d");
 
-      c.width = 200;
-      c.height = 80;
+      c.width = 200; // tambah lebar untuk label kiri
+      c.height = 80; // tambah tinggi untuk angka bawah
 
       const w = c.width;
       const h = c.height;
 
-      const leftPad = 25;
-      const bottomPad = 18;
+      const leftPad = 25; // ruang label kiri
+      const bottomPad = 18; // ruang angka bawah
 
       const baseY = h - bottomPad;
 
       ctx.clearRect(0, 0, w, h);
 
-      /* ===== AXIS ===== */
+
+      /* ================= AXIS ================= */
 
       ctx.strokeStyle = "#000";
       ctx.lineWidth = 1;
@@ -234,7 +235,8 @@ Result
       ctx.lineTo(w - 5, baseY);
       ctx.stroke();
 
-      /* ===== SCALE ===== */
+
+      /* ================= SCALE ANGKA ================= */
 
       ctx.font = "9px monospace";
       ctx.textAlign = "center";
@@ -252,10 +254,11 @@ Result
          ctx.lineTo(x, baseY + 4);
          ctx.stroke();
 
-         ctx.fillText(Math.round(value), x, baseY + 12);
+         ctx.fillText(Math.round(value), x, baseY + 12); // sekarang di luar garis
       }
 
-      /* ===== CURVE ===== */
+
+      /* ================= CURVE ================= */
 
       ctx.beginPath();
 
@@ -272,7 +275,8 @@ Result
 
       ctx.stroke();
 
-      /* ===== LABEL ===== */
+
+      /* ================= LABEL VERTICAL ================= */
 
       ctx.save();
 
@@ -290,60 +294,39 @@ Result
 
    /* ================= WBC ================= */
 
-   const lymph = Number(
-      d["lymph%"] ?? d["limfosit"] ?? d["%lymphocytes"] ?? 30
-   );
+   const lymph = Number(d["limfosit"] ?? d["%ymphocytes"] ?? 30);
+   // Alat 5 DIVV
+   // const mid = Number(
+   //   d["%mid"] ??
+   //     Number(d["monosit"] ?? d["%monocytes"] ?? 0) +
+   //       Number(d["eosinofil"] ?? 0) +
+   //       Number(d["basofil"] ?? 0),
+   // );
 
-   const mid = Number(
-      d["mid%"] ?? d["%monocytes"] ?? d["monosit"] ?? 10
-   );
+   // Alat 3 DIVV
+   const mid = Number(d["monosit"] ?? d["%monocytes"] ?? 0);
+   // Alat 5 DIVV
+   // const gran = Number(
+   //   d["gran%"] ??
+   //     d["%Granulocyte"] ??
+   //     Number(d["neutrofil segmen"] ?? 0) +
+   //       Number(d["neutrofil batang"] ?? 0),
+   // );
+   // Alat 3 DIVV
+   const gran = Number(d["gran%"] ?? d["%granulocyte"] ?? 0);
 
-   const gran = Number(
-      d["gran%"] ?? d["%granulocyte"] ?? 60
-   );
 
    const wbcTotal = Number(d["leukosit"] ?? 8000);
 
-   /* label mulai dari 0 */
    const wbcLabels = Array.from({
       length: 40
-   }, (_, i) => i * 10);
+   }, (_, i) => i * 10 + 50);
 
-   /* ===== RUMUS WBC FINAL ===== */
-
-   const wbcData = wbcLabels.map((x) => {
-
-      // LYMPH
-      let lymphPeak =
-         gaussian(x, 60, 7, (lymph / 100) * wbcTotal * 1.5);
-
-      // 🔥 FORCE PEAK AWAL
-      if (x < 80) {
-         lymphPeak *= 3;
-      }
-
-      // MID
-      const midPeak =
-         gaussian(x, 120, 30, (mid / 100) * wbcTotal * 0.9);
-
-      // GRAN
-      const granPeak =
-         gaussian(x, 220, 50, (gran / 100) * wbcTotal * 1.8);
-
-      // TAIL
-      const tail =
-         gaussian(x, 270, 90, (gran / 100) * wbcTotal * 0.45);
-
-      // VALLEY
-      const valley =
-         gaussian(x, 95, 18, wbcTotal * 0.25);
-
-      return Math.max(
-         lymphPeak + midPeak + granPeak + tail - valley,
-         0
-      );
-
-   });
+   const wbcData = wbcLabels.map(x =>
+      gaussian(x, 90, 15, (lymph / 100) * wbcTotal) +
+      gaussian(x, 150, 20, (mid / 100) * wbcTotal) +
+      gaussian(x, 300, 40, (gran / 100) * wbcTotal)
+   );
 
 
    /* ================= RBC ================= */
@@ -356,7 +339,7 @@ Result
    }, (_, i) => i * 5 + 60);
 
    const rbcData = rbcLabels.map(x =>
-      gaussian(x, mcv, rdw / 2.5, 120)
+      gaussian(x, mcv, rdw, 100)
    );
 
 
@@ -370,7 +353,7 @@ Result
    }, (_, i) => i * 2 + 2);
 
    const pltData = pltLabels.map(x =>
-      gaussian(x, mpv, pdw / 3, 120)
+      gaussian(x, mpv, pdw / 2, 120)
    );
 
 
@@ -383,14 +366,6 @@ Result
 
    /* ================= PRINT ================= */
 
-   window.onload = () => {
-      setTimeout(() => {
-         window.print();
-         window.close();
-      }, 500);
-   };
-</script>
-<script>
    window.onload = () => {
       setTimeout(() => {
          window.print();

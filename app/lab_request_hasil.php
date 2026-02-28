@@ -239,6 +239,6 @@
    </div>
 </body>
 <!-- [Body] end -->
-<script src="../assets/js/lab_request_hasil.js"></script>
+<script src="../assets/js/lab_request_hasil_3diff.js"></script>
 
 </html>
