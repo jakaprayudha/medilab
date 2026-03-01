@@ -411,12 +411,12 @@ echo rowHL("PCT", $f_pct, $pctRaw, "%");
 
    /* ================= PRINT ================= */
 
-   // window.onload = () => {
-   //    setTimeout(() => {
-   //       window.print();
-   //       window.close();
-   //    }, 500);
-   // };
+   window.onload = () => {
+      setTimeout(() => {
+         window.print();
+         window.close();
+      }, 500);
+   };
 </script>
 
 </html>
