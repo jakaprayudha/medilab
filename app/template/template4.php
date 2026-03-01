@@ -1,15 +1,10 @@
 <?php
-function flag($value, $min, $max)
-{
-   if ($value < $min) return "L";
-   if ($value > $max) return "H";
-   return "";
-}
 
 $time = date(
    "d-m-Y H:i",
    strtotime(($pasien['tanggal'] ?? '') . ' ' . ($pasien['waktu'] ?? ''))
 );
+
 $hist = [];
 
 $qHist = mysqli_query($conn, "
@@ -22,9 +17,70 @@ $qHist = mysqli_query($conn, "
 while ($r = mysqli_fetch_assoc($qHist)) {
    $hist[strtolower($r['parameter'])] = $r['hasil'];
 }
-// echo "<pre>";
-// print_r($hist);
-// echo "</pre>";
+
+
+/* ================= FLAG ================= */
+
+function flagHL($value, $min, $max)
+{
+   if (!is_numeric($value)) return ["", $value];
+
+   if ($value < $min) return ["L", $value];
+   if ($value > $max) return ["H", $value];
+
+   return ["", $value];
+}
+
+
+/* ================= ROW FORMAT ================= */
+
+function rowHL($name, $flag, $value, $unit = "")
+{
+   return sprintf(
+      "%-8s %-2s %-5s %s\n",
+      $name,
+      $flag,
+      $value,
+      $unit
+   );
+}
+
+/* ================= DATA FLAG ================= */
+
+list($f_wbc, $wbc) = flagHL($hist['leukosit'] ?? 0, 5.0, 11.0);
+list($f_lymph, $lymph) = flagHL($hist['#lymphocytes'] ?? 0, 1.2, 3.2);
+list($f_mid, $mid) = flagHL($hist['#monocytes'] ?? 0, 0.3, 0.8);
+list($f_gran, $gran) = flagHL($hist['#granulocytes'] ?? 0, 1.2, 6.8);
+
+list($f_lymphp, $lymphp) = flagHL($hist['%lymphocytes'] ?? 0, 20.0, 40.0);
+list($f_midp, $midp) = flagHL($hist['%monocytes'] ?? 0, 2.0, 8.0);
+list($f_granp, $granp) = flagHL($hist['%granulocyte'] ?? 0, 43.0, 76.0);
+
+list($f_rbc, $rbc) = flagHL($hist['eritrosit'] ?? 0, 3.80, 6.50);
+list($f_hgb, $hgb) = flagHL($hist['hemoglobin'] ?? 0, 11.0, 16.0);
+list($f_hct, $hct) = flagHL($hist['hct'] ?? 0, 36.0, 54.0);
+
+
+/* ===== BLOCK 2 ===== */
+
+list($f_mcv, $mcv) = flagHL($hist['mcv'] ?? 0, 76.0, 96.0);
+list($f_mch, $mch) = flagHL($hist['mch'] ?? 0, 27.0, 33.0);
+list($f_mchc, $mchc) = flagHL($hist['mchc'] ?? 0, 32.0, 36.0);
+
+list($f_rdwcv, $rdwcv) = flagHL($hist['rdw'] ?? 0, 11.5, 14.5);
+list($f_rdwsd, $rdwsd) = flagHL($hist['rdw-sd'] ?? 0, 35.0, 56.0);
+
+list($f_plt, $plt) = flagHL($hist['trombosit'] ?? 0, 150, 450);
+list($f_mpv, $mpv) = flagHL($hist['mpv'] ?? 0, 6.5, 9.5);
+list($f_pdw, $pdw) = flagHL($hist['pdw'] ?? 0, 10.0, 18.0);
+
+
+/* ===== NORMALISASI PCT ===== */
+
+$pctRaw = $hist['pct'] ?? 0;
+$pct = $pctRaw > 5 ? $pctRaw / 1000 : $pctRaw;
+
+list($f_pct, $pct) = flagHL($pct, 0.100, 0.500);
 
 ?>
 <!doctype html>
@@ -74,97 +130,68 @@ while ($r = mysqli_fetch_assoc($qHist)) {
       </div>
 
       <div class="row">
-         <!-- ===== 1 ===== -->
          <div class="block">
             <pre>
-Parameter 
-
-WBC    
-Lymph#  
-Mid#   
-Gran# 
-Lymph% 
-Mid%    
-Gran%  
-RBC   
-HGB   
-HCT   
-         </pre>
-         </div>
-
-         <!-- ===== 1 ===== -->
-         <div class="block">
-            <pre>
-Result 
+Parameter    F  Result
 
 <?php
-$wbc = $hasil['wbc'] ?? 0;
-$f = flag($wbc, 5.0, 11.0);
+echo rowHL("WBC", $f_wbc, $wbc, "x10^9/L");
+echo rowHL("Lymph#", $f_lymph, $lymph, "x10^9/L");
+echo rowHL("Mid#", $f_mid, $mid, "x10^9/L");
+echo rowHL("Gran#", $f_gran, $gran, "x10^9/L");
+
+echo rowHL("Lymph%", $f_lymphp, $lymphp, "%");
+echo rowHL("Mid%", $f_midp, $midp, "%");
+echo rowHL("Gran%", $f_granp, $granp, "%");
+
+echo rowHL("RBC", $f_rbc, $rbc, "x10^12/L");
+echo rowHL("HGB", $f_hgb, $hgb, "g/dL");
+echo rowHL("HCT", $f_hct, $hct, "%");
 ?>
-<?= $f ?> <?= $wbc ?> x 10^9/L
-<?= $hist['lymph#'] ?? $hist['limfosit'] ?? $hist['#lymphocytes'] ?? '-' ?> x 10^9/L
-<?= $hist['mid#'] ?? $hist['monosit'] ?? $hist['#monocytes'] ?? '-' ?> x 10^9/L
-<?= $hist['gran#'] ?? $hist['#granulocytes'] ?? '-' ?> x 10^9/L
-<?= $hist['lymph%'] ?? $hist['%lymphocytes'] ?? '-' ?> %
-<?= $hasil['mid%'] ?? $hist['%monocytes'] ?? '-' ?> %
-<?= $hasil['gran%'] ?? $hist['%granulocyte'] ?? '-' ?> %
-<?= $hasil['rbc'] ?? $hist['eritrosit'] ?? '-' ?> x 10^12/L
-<?= $hasil['hgb'] ?? $hist['hemoglobin'] ?? '-' ?> g/dL
-<?= $hist['hct'] ?? '-' ?> %
 </pre>
          </div>
 
-         <!-- ===== 1 ===== -->
          <div class="block">
             <pre>
-  Ref. Range 
+Ref. Range
 
-  5.0 - 11.0
-  1.2 - 3.2
-  0.3 - 0.8
-  1.2 - 6.8
-  20.0 - 40.0
-  2.0 - 8.0
-  43.0 - 76.0
-  11.0 - 16.0
-  3.80 - 6.50
-  36.0 - 54.0
-         </pre>
-         </div>
-         <!-- ===== 1 ===== -->
-         <div class="block">
-            <pre>
-  Parameter 
-
-  MCV    
-  MCH
-  MCHC
-  RDW-CV
-  RDW-SD
-  PLT
-  MPV
-  PDW
-  PCT
-         </pre>
-         </div>
-
-         <!-- ===== 1 ===== -->
-         <div class="block">
-            <pre>
-Result 
-
-<?= $hasil['mcv'] ?? '-' ?> fL
-<?= $hasil['mch'] ?? '-' ?> pg
-<?= $hasil['mchc'] ?? '-' ?> g/dL
-<?= $hasil['rdw-cv'] ?? $hist['rdw'] ?? '-' ?> %
-<?= $hasil['rdw-sd'] ?? '-' ?> fL
-<?= $hasil['plt'] ?? $hist['trombosit'] ?? '-' ?> x 10^9/L
-<?= $hasil['mpv'] ?? '-' ?> fL
-<?= $hasil['pdw'] ?? '-' ?>
-
-<?= $hist['pct'] ?? '-' ?> %
+5.0 - 11.0
+1.2 - 3.2
+0.3 - 0.8
+1.2 - 6.8
+20.0 - 40.0
+2.0 - 8.0
+43.0 - 76.0
+3.80 - 6.50
+11.0 - 16.0
+36.0 - 54.0
 </pre>
          </div>
+
+
+         <div class="block">
+            <pre>
+Parameter    F  Result   
+
+<?php
+echo rowHL("MCV", $f_mcv, $mcv, "fL");
+echo rowHL("MCH", $f_mch, $mch, "pg");
+echo rowHL("MCHC", $f_mchc, $mchc, "g/dL");
+
+echo rowHL("RDW-CV", $f_rdwcv, $rdwcv, "%");
+echo rowHL("RDW-SD", $f_rdwsd, $rdwsd, "fL");
+
+echo rowHL("PLT", $f_plt, $plt, "x10^9/L");
+echo rowHL("MPV", $f_mpv, $mpv, "fL");
+echo rowHL("PDW", $f_pdw, $pdw, "");
+
+echo rowHL("PCT", $f_pct, $pctRaw, "%");
+?>
+</pre>
+
+         </div>
+
+
 
          <!-- ===== 1 ===== -->
          <div class="block">
