@@ -110,7 +110,7 @@ $f = flag($wbc, 5.0, 11.0);
 <?= $hasil['gran%'] ?? $hist['%granulocyte'] ?? '-' ?> %
 <?= $hasil['rbc'] ?? $hist['eritrosit'] ?? '-' ?> x 10^12/L
 <?= $hasil['hgb'] ?? $hist['hemoglobin'] ?? '-' ?> g/dL
-<?= $hasil['hct'] ?? '-' ?> %
+<?= $hist['hct'] ?? '-' ?> %
 </pre>
          </div>
 
@@ -161,7 +161,8 @@ Result
 <?= $hasil['plt'] ?? $hist['trombosit'] ?? '-' ?> x 10^9/L
 <?= $hasil['mpv'] ?? '-' ?> fL
 <?= $hasil['pdw'] ?? '-' ?>
-<?= $hasil['pct'] ?? '-' ?> %
+
+<?= $hist['pct'] ?? '-' ?> %
 </pre>
          </div>
 
@@ -383,20 +384,12 @@ Result
 
    /* ================= PRINT ================= */
 
-   window.onload = () => {
-      setTimeout(() => {
-         window.print();
-         window.close();
-      }, 500);
-   };
-</script>
-<script>
-   window.onload = () => {
-      setTimeout(() => {
-         window.print();
-         window.close();
-      }, 500);
-   };
+   // window.onload = () => {
+   //    setTimeout(() => {
+   //       window.print();
+   //       window.close();
+   //    }, 500);
+   // };
 </script>
 
 </html>
