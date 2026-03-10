@@ -237,8 +237,97 @@
          <div>Mengambil data dari alat...</div>
       </div>
    </div>
+   <div class="modal fade" id="modalDataAlat" tabindex="-1">
+      <div class="modal-dialog modal-lg">
+         <div class="modal-content">
+
+            <div class="modal-header">
+               <h5 class="modal-title">Data Hasil Alat</h5>
+               <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+
+               <table class="table table-bordered">
+                  <thead>
+                     <tr>
+                        <th>Parameter</th>
+                        <th>Hasil</th>
+                        <th>Satuan</th>
+                        <th>Referensi</th>
+                     </tr>
+                  </thead>
+
+                  <tbody id="tableDataAlat"></tbody>
+
+               </table>
+
+            </div>
+
+         </div>
+      </div>
+   </div>
 </body>
 <!-- [Body] end -->
 <script src="../assets/js/lab_request_hasil_3diff.js"></script>
+<script>
+   document.getElementById("btnGetAlat").addEventListener("click", function() {
+
+      const loading = document.getElementById("loadingAlat");
+
+      // tampilkan loading
+      loading.classList.remove("d-none");
+
+      // ambil parameter lab dari URL
+      const params = new URLSearchParams(window.location.search);
+      const lab = params.get("lab");
+
+      // delay 5 detik biar terlihat seperti ambil data alat
+      setTimeout(() => {
+
+         fetch("../api/get_data_alat?lab=" + encodeURIComponent(lab))
+            .then(response => response.json())
+            .then(data => {
+
+               loading.classList.add("d-none");
+
+               if (data.status === "success") {
+
+                  let html = "";
+
+                  data.data.forEach(item => {
+                     html += `
+                    <tr>
+                        <td>${item.parameter}</td>
+                        <td><strong>${item.hasil}</strong></td>
+                        <td>${item.satuan}</td>
+                        <td>${item.referensi}</td>
+                    </tr>`;
+                  });
+
+                  document.getElementById("tableDataAlat").innerHTML = html;
+
+                  const modal = new bootstrap.Modal(
+                     document.getElementById('modalDataAlat')
+                  );
+
+                  modal.show();
+
+               } else {
+                  alert("Data alat tidak ditemukan");
+               }
+
+            })
+            .catch(err => {
+
+               loading.classList.add("d-none");
+               alert("Gagal mengambil data alat");
+
+            });
+
+      }, 5000); // 5 detik
+
+   });
+</script>
 
 </html>
