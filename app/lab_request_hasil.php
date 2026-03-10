@@ -264,6 +264,19 @@
 
             </div>
 
+            <div class="modal-footer">
+
+               <button class="btn btn-success" id="btnSimpanDataAlat">
+                  <i class="bi bi-save"></i> Simpan Data Alat
+               </button>
+
+               <button class="btn btn-secondary" data-bs-dismiss="modal">
+                  Tutup
+               </button>
+
+            </div>
+
+
          </div>
       </div>
    </div>
@@ -326,6 +339,89 @@
             });
 
       }, 5000); // 5 detik
+
+   });
+
+   let dataAlatGlobal = [];
+
+   document.getElementById("btnGetAlat").addEventListener("click", function() {
+
+      const loading = document.getElementById("loadingAlat");
+
+      loading.classList.remove("d-none");
+
+      const params = new URLSearchParams(window.location.search);
+      const lab = params.get("lab");
+
+      setTimeout(() => {
+
+         fetch("../api/get_data_alat?lab=" + encodeURIComponent(lab))
+            .then(response => response.json())
+            .then(data => {
+
+               loading.classList.add("d-none");
+
+               if (data.status === "success") {
+
+                  dataAlatGlobal = data.data;
+
+                  let html = "";
+
+                  data.data.forEach(item => {
+                     html += `
+               <tr>
+                  <td>${item.parameter}</td>
+                  <td><strong>${item.hasil}</strong></td>
+                  <td>${item.satuan}</td>
+                  <td>${item.referensi}</td>
+               </tr>`;
+                  });
+
+                  document.getElementById("tableDataAlat").innerHTML = html;
+
+                  const modal = new bootstrap.Modal(
+                     document.getElementById('modalDataAlat')
+                  );
+
+                  modal.show();
+
+               }
+
+            });
+
+      }, 5000);
+
+   });
+
+
+   document.getElementById("btnSimpanDataAlat").addEventListener("click", function() {
+
+      const params = new URLSearchParams(window.location.search);
+
+      const permintaan = params.get("no");
+      const lab = params.get("lab");
+
+      fetch("../api/save_data_alat", {
+            method: "POST",
+            headers: {
+               "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+               permintaan: permintaan,
+               lab: lab,
+               data: dataAlatGlobal
+            })
+         })
+         .then(res => res.json())
+         .then(res => {
+
+            if (res.status === "success") {
+               alert("Data berhasil disimpan");
+
+               location.reload();
+            }
+
+         });
 
    });
 </script>
