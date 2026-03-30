@@ -8,24 +8,29 @@ $method = $_SERVER["REQUEST_METHOD"];
 if ($method === "GET" && !isset($_GET["id"])) {
 
    $sql = "SELECT 
-    d.*, 
-    pv.nama_pasien, 
-    pv.dokter, 
+    d.*,
+    pv.nama_pasien,
+    pv.dokter,
     pv.sumber,
-    COUNT(i.id) AS total_item
-      FROM permintaan_lab d
+    COALESCE(i.total_item, 0) AS total_item
 
-      LEFT JOIN permintaan_lab_detail i 
-         ON i.nopermintaan = d.nopermintaan 
-         AND i.nomor_rm = d.nomor_rm
+FROM permintaan_lab d
 
-      INNER JOIN pasien_visit pv 
-         ON pv.nomor_visit = d.catatan
+LEFT JOIN (
+    SELECT 
+        nopermintaan,
+        nomor_rm,
+        COUNT(id) AS total_item
+    FROM permintaan_lab_detail
+    GROUP BY nopermintaan, nomor_rm
+) i 
+  ON i.nopermintaan = d.nopermintaan
+  AND i.nomor_rm = d.nomor_rm
 
-      -- WHERE d.status = 0
+LEFT JOIN pasien_visit pv 
+  ON pv.nomor_visit = d.catatan
 
-      GROUP BY d.nopermintaan
-      ORDER BY d.tanggal DESC";
+ORDER BY d.tanggal DESC;";
 
    $q = mysqli_query($conn, $sql);
 
