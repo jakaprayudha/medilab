@@ -115,7 +115,7 @@ list($f_pct, $pct) = flagHL($pct, 0.100, 0.500);
             </span>
 
             <span>
-               Age : <?= $pasien['usia'] ?? '-' ?> Yrs
+               Age : <?= explode(' ', $pasien['usia'] ?? '0')[0] ?> Yrs
             </span>
 
          </div>
